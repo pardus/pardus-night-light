@@ -1,0 +1,18 @@
+/* color selection by Daniel Foré and elementary OS */
+@define-color ORANGE_100 #ffc27d;
+@define-color ORANGE_500 #f37329;
+@define-color base_color white;
+@define-color bg_color shade (@base_color, 0.96);
+
+
+scale highlight {
+   color:transparent;
+   background-color:transparent;
+   border-style:none;
+}
+
+scale trough {
+    padding-top: 7px;
+    padding-bottom: 7px;
+    background-image: linear-gradient(to right, mix(@bg_color, @ORANGE_100, 0.5), @ORANGE_500);
+}

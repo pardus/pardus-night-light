@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Pardus Night Light
+Name[tr]=Pardus Gece Işığı 
+Comment=Simple color temperature application based on Redshift
+Comment[tr]=Redshift tabanlı basit renk sıcaklığı uygulaması
+Exec=pardus-night-light --tray
+Icon=pardus-night-light
+Terminal=false
+Type=Application
+Categories=GTK;Utility;
+StartupNotify=true
+Keywords=redshift;night;light;eye;blue;color;temperature
+Keywords[tr]=redshift;gece;ışık;göz;mavi;renk;sıcaklık
