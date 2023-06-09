@@ -15,7 +15,7 @@ class UserSettings(object):
         self.userhome = str(Path.home())
 
         self.default_status = False
-        self.default_temp = 4700
+        self.default_temp = 5500
         self.default_autostart = False
 
         self.configdir = self.userhome + "/.config/pardus/pardus-night-light/"
