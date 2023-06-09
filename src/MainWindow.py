@@ -93,9 +93,9 @@ class MainWindow(object):
         self.temp_adjusment = self.GtkBuilder.get_object("ui_temp_adjusment")
 
     def define_variables(self):
-        not_local = "usr/share" in os.path.dirname(os.path.abspath(__file__))
-        self.icon_active = "pardus-night-light-enabled-symbolic" if not_local else "night-light-symbolic"
-        self.icon_passive = "pardus-night-light-disabled-symbolic" if not_local else "display-brightness-symbolic"
+        system_wide = "usr/share" in os.path.dirname(os.path.abspath(__file__))
+        self.icon_active = "pardus-night-light-enabled-symbolic" if system_wide else "night-light-symbolic"
+        self.icon_passive = "pardus-night-light-disabled-symbolic" if system_wide else "display-brightness-symbolic"
 
     def user_settings(self):
         self.UserSettings = UserSettings()
@@ -109,6 +109,12 @@ class MainWindow(object):
         self.autostart_switch.set_state(self.UserSettings.config_autostart)
         if not self.UserSettings.config_status:
             subprocess.run(["redshift", "-x"])
+
+        system_wide = "usr/share" in os.path.dirname(os.path.abspath(__file__))
+        if not system_wide:
+            self.main_window.set_default_icon_from_file(
+                os.path.dirname(os.path.abspath(__file__)) + "/../data/pardus-night-light.svg")
+            self.about_dialog.set_logo(None)
 
     def init_indicator(self):
         self.indicator = appindicator.Indicator.new(
