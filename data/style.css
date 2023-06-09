@@ -1,6 +1,9 @@
-/* color selection by Daniel Foré and elementary OS */
+@define-color ORANGE_100 #FFDFBB;
+@define-color ORANGE_500 #F06A1D;
+/*
 @define-color ORANGE_100 #ffc27d;
 @define-color ORANGE_500 #f37329;
+*/
 @define-color base_color white;
 @define-color bg_color shade (@base_color, 0.96);
 
