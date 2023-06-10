@@ -9,6 +9,7 @@ Created on Sat Feb  5 19:05:13 2022
 import os
 import subprocess
 import signal
+import time
 
 import gi
 
@@ -96,6 +97,7 @@ class MainWindow(object):
         system_wide = "usr/share" in os.path.dirname(os.path.abspath(__file__))
         self.icon_active = "pardus-night-light-enabled-symbolic" if system_wide else "night-light-symbolic"
         self.icon_passive = "pardus-night-light-disabled-symbolic" if system_wide else "display-brightness-symbolic"
+        self.make_first_sleep = True
 
     def user_settings(self):
         self.UserSettings = UserSettings()
@@ -185,6 +187,9 @@ class MainWindow(object):
     def on_ui_night_switch_state_set(self, switch, state):
         self.temp_scale.set_sensitive(state)
         if state:
+            if "tray" in self.Application.args.keys() and self.make_first_sleep:
+                self.make_first_sleep = False
+                time.sleep(5)
             subprocess.run(["redshift", "-P", "-O", "{:0.0f}".format(self.UserSettings.config_temp)])
             self.temp_adjusment.set_value(self.UserSettings.config_temp)
             self.item_action.set_label(_("Disable"))
