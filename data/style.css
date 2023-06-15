@@ -12,6 +12,7 @@ scale highlight {
    color:transparent;
    background-color:transparent;
    border-style:none;
+   background-image:none;
 }
 
 scale trough {
