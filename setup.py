@@ -45,12 +45,12 @@ data_files = [
      ["data/style.css",
       "data/tr.org.pardus.night-light-autostart.desktop",
       "data/pardus-night-light.svg",
-      "data/pardus-night-light-enabled-symbolic.svg",
-      "data/pardus-night-light-disabled-symbolic.svg"]),
+      "data/pardus-night-light-on-symbolic.svg",
+      "data/pardus-night-light-off-symbolic.svg"]),
     ("/usr/share/icons/hicolor/scalable/apps/",
      ["data/pardus-night-light.svg",
-      "data/pardus-night-light-enabled-symbolic.svg",
-      "data/pardus-night-light-disabled-symbolic.svg"])
+      "data/pardus-night-light-on-symbolic.svg",
+      "data/pardus-night-light-off-symbolic.svg"])
 ] + create_mo_files()
 
 setup(

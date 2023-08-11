@@ -95,8 +95,8 @@ class MainWindow(object):
 
     def define_variables(self):
         system_wide = "usr/share" in os.path.dirname(os.path.abspath(__file__))
-        self.icon_active = "pardus-night-light-enabled-symbolic" if system_wide else "night-light-symbolic"
-        self.icon_passive = "pardus-night-light-disabled-symbolic" if system_wide else "display-brightness-symbolic"
+        self.icon_active = "pardus-night-light-on-symbolic" if system_wide else "night-light-symbolic"
+        self.icon_passive = "pardus-night-light-off-symbolic" if system_wide else "display-brightness-symbolic"
         self.make_first_sleep = True
 
     def user_settings(self):

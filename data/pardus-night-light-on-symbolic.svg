@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="64"
+   height="64"
+   viewBox="0 0 16.933333 16.933333"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   sodipodi:docname="pardus-night-light-on.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="4.6614685"
+     inkscape:cx="7.9374129"
+     inkscape:cy="37.434555"
+     inkscape:window-width="1920"
+     inkscape:window-height="1171"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g148"
+       transform="matrix(0.26458333,0,0,0.26458333,93.459699,25.284826)">
+      <path
+         class="st22"
+         d="m -318.20067,-57.2647 c -3.8,-1.1 -6.7,-4.2 -7.7,-7.9 -1.4,-5.3 0.8,-10.3 4.8,-12.9 -9.2,-0.1 -16.5,8.4 -14.3,18 1.3,5.5 5.7,9.7 11.2,10.8 7.7,1.5 14.7,-3.1 16.8,-9.9 -2.9,2.1 -6.8,3.1 -10.8,1.9 z"
+         id="path64"
+         style="fill:#939495" />
+      <g
+         id="g65"
+         transform="translate(-213.70067,-74.3647)">&#10;	<path
+   class="st0"
+   d="m -107.6,30.8 c -11,0 -20,-9 -20,-20 0,-11 9,-20 20,-20 11,0 20,9 20,20 0,11 -8.9,20 -20,20 z m 0,-37 c -9.4,0 -17,7.6 -17,17 0,9.4 7.6,17 17,17 9.4,0 17,-7.6 17,-17 0,-9.4 -7.6,-17 -17,-17 z"
+   id="path65"
+   style="fill:#2f3537" />
+&#10;</g>
+      <g
+         id="g80"
+         transform="translate(-213.70067,-74.3647)">&#10;	<path
+   class="st0"
+   d="m -97.2,-12.5 -3.2,2.4 c -0.1,0.1 -0.1,0.2 0,0.2 l 3.7,1.6 c 0.1,0 0.2,0 0.2,-0.1 l -0.4,-4 c -0.1,-0.1 -0.2,-0.2 -0.3,-0.1 z"
+   id="path66"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -88.5,-6.2 -3.9,0.8 c -0.1,0 -0.1,0.1 -0.1,0.2 l 2.7,3 c 0.1,0.1 0.2,0 0.2,0 l 1.2,-3.8 c 0.1,-0.2 0,-0.3 -0.1,-0.2 z"
+   id="path67"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="M -83.1,3 -87,2.2 c -0.1,0 -0.2,0.1 -0.1,0.2 l 1.2,3.8 c 0,0.1 0.1,0.1 0.2,0 l 2.7,-3 c 0,0 0,-0.2 -0.1,-0.2 z"
+   id="path68"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -81.9,13.7 -3.2,-2.4 c -0.1,-0.1 -0.2,0 -0.2,0.1 l -0.4,4 c 0,0.1 0.1,0.2 0.2,0.1 l 3.7,-1.6 c -0.1,-0.1 -0.1,-0.2 -0.1,-0.2 z"
+   id="path69"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -85.2,23.9 -2,-3.5 c 0,-0.1 -0.2,-0.1 -0.2,0 l -2,3.5 c 0,0.1 0,0.2 0.1,0.2 h 4 c 0.1,0 0.1,-0.1 0.1,-0.2 z"
+   id="path70"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -92.3,31.9 -0.4,-4 c 0,-0.1 -0.1,-0.1 -0.2,-0.1 l -3.2,2.4 c -0.1,0.1 -0.1,0.2 0,0.2 l 3.7,1.6 c 0,0 0.1,0 0.1,-0.1 z"
+   id="path71"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -102.1,36.3 1.2,-3.8 c 0,-0.1 0,-0.2 -0.1,-0.2 l -3.9,0.8 c -0.1,0 -0.1,0.1 -0.1,0.2 l 2.7,3 c 0,0.1 0.2,0.1 0.2,0 z"
+   id="path72"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -112.8,36.3 2.7,-3 c 0.1,-0.1 0,-0.2 -0.1,-0.2 l -3.9,-0.8 c -0.1,0 -0.2,0.1 -0.1,0.2 l 1.2,3.8 c 0,0.1 0.1,0.1 0.2,0 z"
+   id="path73"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -122.6,32 3.7,-1.6 c 0.1,0 0.1,-0.2 0,-0.2 l -3.2,-2.4 c -0.1,-0.1 -0.2,0 -0.2,0.1 l -0.4,4 c -0.1,0.1 0,0.1 0.1,0.1 z"
+   id="path74"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -129.8,24.1 h 4 c 0.1,0 0.2,-0.1 0.1,-0.2 l -2,-3.5 c 0,-0.1 -0.2,-0.1 -0.2,0 l -2,3.5 c -0.1,0.1 0,0.2 0.1,0.2 z"
+   id="path75"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -133.2,13.9 3.7,1.6 c 0.1,0 0.2,0 0.2,-0.1 l -0.4,-4 c 0,-0.1 -0.1,-0.1 -0.2,-0.1 l -3.2,2.4 c -0.2,0 -0.2,0.1 -0.1,0.2 z"
+   id="path76"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -132.1,3.2 2.7,3 c 0.1,0.1 0.2,0 0.2,0 l 1.2,-3.8 c 0,-0.1 0,-0.2 -0.1,-0.2 L -132,3 c -0.1,0 -0.2,0.2 -0.1,0.2 z"
+   id="path77"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -126.8,-6.1 1.2,3.8 c 0,0.1 0.1,0.1 0.2,0 l 2.7,-3 c 0.1,-0.1 0,-0.2 -0.1,-0.2 l -3.9,-0.8 c 0,0 -0.1,0.1 -0.1,0.2 z"
+   id="path78"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -118.1,-12.4 -0.4,4 c 0,0.1 0.1,0.2 0.2,0.1 l 3.7,-1.6 c 0.1,0 0.1,-0.2 0,-0.2 l -3.2,-2.4 c -0.2,-0.1 -0.3,0 -0.3,0.1 z"
+   id="path79"
+   style="fill:#2f3537" />
+&#10;	<path
+   class="st0"
+   d="m -107.7,-14.7 -2,3.5 c 0,0.1 0,0.2 0.1,0.2 h 4 c 0.1,0 0.2,-0.1 0.1,-0.2 l -2,-3.5 c 0,-0.1 -0.1,-0.1 -0.2,0 z"
+   id="path80"
+   style="fill:#2f3537" />
+&#10;</g>
+    </g>
+  </g>
+</svg>
