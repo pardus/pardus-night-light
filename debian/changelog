@@ -1,5 +1,19 @@
 pardus-night-light (0.1.0) unstable; urgency=medium
 
   * Initial Commit
+  * Add setup icons to data too
+  * Fix app icon controls
+  * Update temperature range and default value to 5500
+  * Update scale colors
+  * Add sleep to startup run
+  * Update install path
+  * Update scale highlight css
+  * Add X-Pardus-Apps to desktop file categories
+  * Update app icons
+  * Update app icon
+  * Update app status icons
+  * Update about dialog
+  * Update app icon
+  * Fix translatables
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Mon, 07 Feb 2022 18:00:32 +0300
+ -- Fatih Altun <fatih.altun@pardus.org.tr>  Sun, 20 Aug 2023 16:25:25 +0300
