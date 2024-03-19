@@ -175,6 +175,7 @@ class MainWindow(object):
         else:
             self.main_window.set_visible(True)
             self.item_sh_app.set_label(_("Hide App"))
+            self.main_window.present()
 
     def on_menu_quit_app(self, *args):
         subprocess.run(["redshift", "-x"])
