@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-08 19:59+0300\n"
+"POT-Creation-Date: 2024-03-19 10:35+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,46 +17,51 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ui/MainWindow.glade:15
-msgid "Simple color temperature application based on Redshift."
-msgstr ""
-
-#: ui/MainWindow.glade:91
+#: ui/MainWindow.glade:51
 msgid "Night Light"
 msgstr ""
 
-#: ui/MainWindow.glade:104
+#: ui/MainWindow.glade:64
 msgid "Color Temperature"
 msgstr ""
 
-#: ui/MainWindow.glade:117
+#: ui/MainWindow.glade:77
 msgid "Launch at startup"
 msgstr ""
 
-#: ui/MainWindow.glade:249
-msgid "Based on Redshift"
-msgstr ""
-
-#: src/MainWindow.py:56 src/MainWindow.py:117
+#: ui/MainWindow.glade:208 src/MainWindow.py:57 src/MainWindow.py:133
 msgid "Pardus Night Light"
 msgstr ""
 
-#: src/MainWindow.py:125
+#: ui/MainWindow.glade:237
+msgid "Simple color temperature application based on Redshift."
+msgstr ""
+
+#. Name Surname <example@examplemail.com>
+#: ui/MainWindow.glade:240
+msgid "translator-credits"
+msgstr ""
+
+#: src/MainWindow.py:61
+msgid "About Pardus Night Light"
+msgstr ""
+
+#: src/MainWindow.py:141
 msgid "Quit"
 msgstr ""
 
-#: src/MainWindow.py:137 src/MainWindow.py:184
+#: src/MainWindow.py:153 src/MainWindow.py:203
 msgid "Disable"
 msgstr ""
 
-#: src/MainWindow.py:140 src/MainWindow.py:188
+#: src/MainWindow.py:156 src/MainWindow.py:207
 msgid "Enable"
 msgstr ""
 
-#: src/MainWindow.py:144 src/MainWindow.py:161
+#: src/MainWindow.py:160 src/MainWindow.py:177
 msgid "Hide App"
 msgstr ""
 
-#: src/MainWindow.py:146 src/MainWindow.py:158 src/MainWindow.py:211
+#: src/MainWindow.py:162 src/MainWindow.py:174 src/MainWindow.py:230
 msgid "Show App"
 msgstr ""
