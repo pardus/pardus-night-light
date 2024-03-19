@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# Fatih Altun <fatih.altun@pardus.org.tr>, 2023.
+# Fatih Altun <fatih.altun@pardus.org.tr>, 2023-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-08 19:59+0300\n"
-"PO-Revision-Date: 2023-06-08 17:37+0300\n"
+"POT-Creation-Date: 2024-03-19 10:35+0300\n"
+"PO-Revision-Date: 2024-03-19 10:35+0300\n"
 "Last-Translator: Fatih Altun <fatih.altun@pardus.org.tr>\n"
 "Language-Team: Turkish <dev@pardus.org.tr>\n"
 "Language: tr\n"
@@ -17,48 +17,56 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 3.38.0\n"
+"X-Generator: Gtranslator 42.0\n"
 
-#: ui/MainWindow.glade:15
-msgid "Simple color temperature application based on Redshift."
-msgstr "Redshift tabanlı basit renk sıcaklığı uygulaması."
-
-#: ui/MainWindow.glade:91
+#: ui/MainWindow.glade:51
 msgid "Night Light"
 msgstr "Gece Işığı"
 
-#: ui/MainWindow.glade:104
+#: ui/MainWindow.glade:64
 msgid "Color Temperature"
 msgstr "Renk Sıcaklığı"
 
-#: ui/MainWindow.glade:117
+#: ui/MainWindow.glade:77
 msgid "Launch at startup"
 msgstr "Başlangıçta çalıştır"
 
-#: ui/MainWindow.glade:249
-msgid "Based on Redshift"
-msgstr "Redshift tabanlı"
-
-#: src/MainWindow.py:56 src/MainWindow.py:117
+#: ui/MainWindow.glade:208 src/MainWindow.py:57 src/MainWindow.py:133
 msgid "Pardus Night Light"
 msgstr "Pardus Gece Işığı"
 
-#: src/MainWindow.py:125
+#: ui/MainWindow.glade:237
+msgid "Simple color temperature application based on Redshift."
+msgstr "Redshift tabanlı basit renk sıcaklığı uygulaması."
+
+#. Name Surname <example@examplemail.com>
+#: ui/MainWindow.glade:240
+msgid "translator-credits"
+msgstr "Fatih Altun <fatih.altun@pardus.org.tr>"
+
+#: src/MainWindow.py:61
+msgid "About Pardus Night Light"
+msgstr "Pardus Gece Işığı Hakkında"
+
+#: src/MainWindow.py:141
 msgid "Quit"
 msgstr "Çıkış"
 
-#: src/MainWindow.py:137 src/MainWindow.py:184
+#: src/MainWindow.py:153 src/MainWindow.py:203
 msgid "Disable"
 msgstr "Devre Dışı Bırak"
 
-#: src/MainWindow.py:140 src/MainWindow.py:188
+#: src/MainWindow.py:156 src/MainWindow.py:207
 msgid "Enable"
 msgstr "Etkinleştir"
 
-#: src/MainWindow.py:144 src/MainWindow.py:161
+#: src/MainWindow.py:160 src/MainWindow.py:177
 msgid "Hide App"
 msgstr "Gizle"
 
-#: src/MainWindow.py:146 src/MainWindow.py:158 src/MainWindow.py:211
+#: src/MainWindow.py:162 src/MainWindow.py:174 src/MainWindow.py:230
 msgid "Show App"
 msgstr "Göster"
+
+#~ msgid "Based on Redshift"
+#~ msgstr "Redshift tabanlı"
