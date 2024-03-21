@@ -1,14 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
+# Portuguese translation for pardus-night-light.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# Hugo Carvalho <hugokarvalho@hotmail.com>, 2023.
+# This file is distributed under the same license as the pardus-night-light package.
+# Hugo Carvalho <hugokarvalho@hotmail.com>, 2023, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-08 19:59+0300\n"
-"PO-Revision-Date: 2023-07-28 18:40+0100\n"
+"POT-Creation-Date: 2024-03-19 10:35+0300\n"
+"PO-Revision-Date: 2024-03-20 18:31+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: \n"
 "Language: pt\n"
@@ -16,48 +16,56 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4.2\n"
 
-#: ui/MainWindow.glade:15
-msgid "Simple color temperature application based on Redshift."
-msgstr "Aplicação para ajustar a temperatura da cor baseada no Redshift."
-
-#: ui/MainWindow.glade:91
+#: ui/MainWindow.glade:51
 msgid "Night Light"
-msgstr "Luz noturna"
+msgstr "Luz Noturna"
 
-#: ui/MainWindow.glade:104
+#: ui/MainWindow.glade:64
 msgid "Color Temperature"
 msgstr "Temperatura da cor"
 
-#: ui/MainWindow.glade:117
+#: ui/MainWindow.glade:77
 msgid "Launch at startup"
 msgstr "Iniciar no arranque"
 
-#: ui/MainWindow.glade:249
-msgid "Based on Redshift"
-msgstr "Baseada no Redshift"
-
-#: src/MainWindow.py:56 src/MainWindow.py:117
+#: ui/MainWindow.glade:208 src/MainWindow.py:57 src/MainWindow.py:133
 msgid "Pardus Night Light"
-msgstr "Luz noturna Pardus"
+msgstr "Luz Noturna Pardus"
 
-#: src/MainWindow.py:125
+#: ui/MainWindow.glade:237
+msgid "Simple color temperature application based on Redshift."
+msgstr "Aplicação para ajustar a temperatura da cor baseada no Redshift."
+
+#. Name Surname <example@examplemail.com>
+#: ui/MainWindow.glade:240
+msgid "translator-credits"
+msgstr "Hugo Carvalho <hugokarvalho@hotmail.com>"
+
+#: src/MainWindow.py:61
+msgid "About Pardus Night Light"
+msgstr "Acerca do Luz Noturna Pardus"
+
+#: src/MainWindow.py:141
 msgid "Quit"
 msgstr "Sair"
 
-#: src/MainWindow.py:137 src/MainWindow.py:184
+#: src/MainWindow.py:153 src/MainWindow.py:203
 msgid "Disable"
 msgstr "Desativar"
 
-#: src/MainWindow.py:140 src/MainWindow.py:188
+#: src/MainWindow.py:156 src/MainWindow.py:207
 msgid "Enable"
 msgstr "Ativar"
 
-#: src/MainWindow.py:144 src/MainWindow.py:161
+#: src/MainWindow.py:160 src/MainWindow.py:177
 msgid "Hide App"
 msgstr "Ocultar aplicação"
 
-#: src/MainWindow.py:146 src/MainWindow.py:158 src/MainWindow.py:211
+#: src/MainWindow.py:162 src/MainWindow.py:174 src/MainWindow.py:230
 msgid "Show App"
 msgstr "Mostrar aplicação"
+
+#~ msgid "Based on Redshift"
+#~ msgstr "Baseada no Redshift"
