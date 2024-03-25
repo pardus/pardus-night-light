@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
+import subprocess
+
 from setuptools import setup, find_packages
-import os, subprocess
+
 
 def create_mo_files():
     podir = "po"

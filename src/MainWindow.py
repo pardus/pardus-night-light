@@ -7,8 +7,8 @@ Created on Sat Feb  5 19:05:13 2022
 """
 
 import os
-import subprocess
 import signal
+import subprocess
 import time
 
 import gi
@@ -29,6 +29,7 @@ from UserSettings import UserSettings
 
 import locale
 from locale import gettext as _
+
 locale.bindtextdomain('pardus-night-light', '/usr/share/locale')
 locale.textdomain('pardus-night-light')
 
@@ -62,7 +63,7 @@ class MainWindow(object):
             about_headerbar.pack_start(Gtk.Image.new_from_icon_name("pardus-night-light", Gtk.IconSize.LARGE_TOOLBAR))
             about_headerbar.show_all()
             self.about_dialog.set_titlebar(about_headerbar)
-        
+
         # Set version
         # If not getted from __version__ file then accept version in MainWindow.glade file
         try:
@@ -77,6 +78,7 @@ class MainWindow(object):
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
+
         # With the others GTK_STYLE_PROVIDER_PRIORITY values get the same result.
 
         def sighandler(signum, frame):
@@ -84,6 +86,7 @@ class MainWindow(object):
             if self.about_dialog.is_visible():
                 self.about_dialog.hide()
             self.main_window.get_application().quit()
+
         signal.signal(signal.SIGINT, sighandler)
         signal.signal(signal.SIGTERM, sighandler)
 
@@ -224,7 +227,6 @@ class MainWindow(object):
         if state != user_autostart:
             self.UserSettings.writeConfig(self.UserSettings.config_status, self.UserSettings.config_temp, state)
             self.user_settings()
-
 
     def on_ui_about_button_clicked(self, button):
         self.about_dialog.run()

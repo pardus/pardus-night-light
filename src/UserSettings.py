@@ -6,10 +6,11 @@ Created on Wed Feb 16 14:53:13 2022
 @author: fatih
 """
 
+import os
 from configparser import ConfigParser
 from pathlib import Path
-from shutil import copy2, rmtree
-import os
+
+
 class UserSettings(object):
     def __init__(self):
         self.userhome = str(Path.home())
@@ -80,7 +81,8 @@ class UserSettings(object):
         p = Path(self.autostartdir + self.autostartfile)
         if state:
             if not p.exists():
-                p.symlink_to(os.path.dirname(os.path.abspath(__file__)) + "/../data/tr.org.pardus.night-light-autostart.desktop")
+                p.symlink_to(
+                    os.path.dirname(os.path.abspath(__file__)) + "/../data/tr.org.pardus.night-light-autostart.desktop")
         else:
             if p.exists():
                 p.unlink(missing_ok=True)
