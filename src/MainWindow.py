@@ -81,6 +81,8 @@ class MainWindow(object):
 
         def sighandler(signum, frame):
             subprocess.run(["redshift", "-x"])
+            if self.about_dialog.is_visible():
+                self.about_dialog.hide()
             self.main_window.get_application().quit()
         signal.signal(signal.SIGINT, sighandler)
         signal.signal(signal.SIGTERM, sighandler)
@@ -179,6 +181,8 @@ class MainWindow(object):
 
     def on_menu_quit_app(self, *args):
         subprocess.run(["redshift", "-x"])
+        if self.about_dialog.is_visible():
+            self.about_dialog.hide()
         self.main_window.get_application().quit()
 
     def on_ui_temp_adjusment_value_changed(self, adjusment):
@@ -233,4 +237,6 @@ class MainWindow(object):
 
     def on_ui_main_window_destroy(self, widget, event):
         subprocess.run(["redshift", "-x"])
+        if self.about_dialog.is_visible():
+            self.about_dialog.hide()
         self.main_window.get_application().quit()
