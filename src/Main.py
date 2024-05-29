@@ -20,6 +20,7 @@ class Application(Gtk.Application):
         super().__init__(*args, application_id="tr.org.pardus.night-light",
                          flags=Gio.ApplicationFlags(8), **kwargs)
         self.window = None
+        GLib.set_prgname("tr.org.pardus.night-light")
 
         self.add_main_option(
             "tray",
