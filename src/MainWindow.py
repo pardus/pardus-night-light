@@ -82,9 +82,7 @@ class MainWindow(object):
         # With the others GTK_STYLE_PROVIDER_PRIORITY values get the same result.
 
         def sighandler(signum, frame):
-            subprocess.run(["redshift", "-x"])
-            if self.about_dialog.is_visible():
-                self.about_dialog.hide()
+            self.reset_temp()
             self.main_window.get_application().quit()
 
         signal.signal(signal.SIGINT, sighandler)
@@ -123,7 +121,7 @@ class MainWindow(object):
         self.temp_adjusment.set_value(self.UserSettings.config_temp)
         self.autostart_switch.set_state(self.UserSettings.config_autostart)
         if not self.UserSettings.config_status:
-            subprocess.run(["redshift", "-x"])
+            self.reset_temp()
 
         system_wide = "usr/share" in os.path.dirname(os.path.abspath(__file__))
         if not system_wide:
@@ -183,9 +181,7 @@ class MainWindow(object):
             self.main_window.present()
 
     def on_menu_quit_app(self, *args):
-        subprocess.run(["redshift", "-x"])
-        if self.about_dialog.is_visible():
-            self.about_dialog.hide()
+        self.reset_temp()
         self.main_window.get_application().quit()
 
     def on_ui_temp_adjusment_value_changed(self, adjusment):
@@ -193,7 +189,8 @@ class MainWindow(object):
         print("on_ui_temp_adjusment_value_changed", value)
 
         if self.UserSettings.config_status:
-            subprocess.run(["redshift", "-P", "-O", value])
+            self.reset_temp()
+            self.change_temp(value)
 
         user_temp = self.UserSettings.config_temp
         if value != user_temp:
@@ -206,12 +203,12 @@ class MainWindow(object):
             if "tray" in self.Application.args.keys() and self.make_first_sleep:
                 self.make_first_sleep = False
                 time.sleep(5)
-            subprocess.run(["redshift", "-P", "-O", "{:0.0f}".format(self.UserSettings.config_temp)])
+            self.change_temp("{:0.0f}".format(self.UserSettings.config_temp))
             self.temp_adjusment.set_value(self.UserSettings.config_temp)
             self.item_action.set_label(_("Disable"))
             self.indicator.set_icon(self.icon_active)
         else:
-            subprocess.run(["redshift", "-x"])
+            self.reset_temp()
             self.item_action.set_label(_("Enable"))
             self.indicator.set_icon(self.icon_passive)
 
@@ -238,7 +235,20 @@ class MainWindow(object):
         return True
 
     def on_ui_main_window_destroy(self, widget, event):
-        subprocess.run(["redshift", "-x"])
-        if self.about_dialog.is_visible():
-            self.about_dialog.hide()
+        self.reset_temp()
         self.main_window.get_application().quit()
+
+    def change_temp(self,value):
+        self.desktop= os.environ['XDG_CURRENT_DESKTOP'] or "unknown"
+        if self.desktop == "GNOME":
+            subprocess.run(["gsettings", "set", "org.gnome.settings-daemon.plugins.color", "night-light-temperature",value])
+        else:
+            subprocess.run(["redshift", "-P", "-O",value])
+
+    def reset_temp(self):
+        self.desktop= os.environ['XDG_CURRENT_DESKTOP'] or "unknown"
+        if self.desktop == "GNOME":
+            subprocess.run(["gsettings", "set", "org.gnome.settings-daemon.plugins.color", "night-light-enabled","true"])
+            self.change_temp("6500")
+        else:
+            subprocess.run(["redshift", "-x"])
