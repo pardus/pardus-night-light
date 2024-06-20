@@ -13,16 +13,16 @@ from pathlib import Path
 
 class UserSettings(object):
     def __init__(self):
-        self.userhome = str(Path.home())
+        self.xdg_config_dir = os.getenv("XDG_CONFIG_HOME", str(Path.home()) + "/.config/")
 
         self.default_status = False
         self.default_temp = 5500
         self.default_autostart = False
 
-        self.configdir = self.userhome + "/.config/pardus/pardus-night-light/"
+        self.configdir = self.xdg_config_dir + "/pardus/pardus-night-light/"
         self.configfile = "settings.ini"
 
-        self.autostartdir = self.userhome + "/.config/autostart/"
+        self.autostartdir = self.xdg_config_dir + "/autostart/"
         self.autostartfile = "tr.org.pardus.night-light-autostart.desktop"
 
         self.config = ConfigParser(strict=False)
