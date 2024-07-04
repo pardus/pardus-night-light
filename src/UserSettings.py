@@ -10,19 +10,22 @@ import os
 from configparser import ConfigParser
 from pathlib import Path
 
+import gi
+
+gi.require_version("GLib", "2.0")
+from gi.repository import GLib
+
 
 class UserSettings(object):
     def __init__(self):
-        self.userhome = str(Path.home())
-
         self.default_status = False
         self.default_temp = 5500
         self.default_autostart = False
 
-        self.configdir = self.userhome + "/.config/pardus/pardus-night-light/"
+        self.configdir = "{}/pardus/pardus-night-light/".format(GLib.get_user_config_dir())
         self.configfile = "settings.ini"
 
-        self.autostartdir = self.userhome + "/.config/autostart/"
+        self.autostartdir = "{}/autostart/".format(GLib.get_user_config_dir())
         self.autostartfile = "tr.org.pardus.night-light-autostart.desktop"
 
         self.config = ConfigParser(strict=False)
