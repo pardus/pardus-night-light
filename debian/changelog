@@ -1,3 +1,37 @@
+pardus-night-light (0.2.0) unstable; urgency=medium
+
+  [ bariscodefx ]
+  * ported xfce about dialog fix from pardus-software
+
+  [ Hugo Carvalho ]
+  * Add Portuguese translation
+
+  [ Fatih Altun ]
+  * Fix translators structure
+  * Update transient of about window
+  * Add pt to update translations script
+  * Update pot file
+  * Update Turkish translations
+  * Add window present to show menu
+
+  [ Hugo Carvalho ]
+  * Update Portuguese translations
+
+  [ Fatih Altun ]
+  * Fix quit app func
+  * Reformat Code
+
+  [ sulincix ]
+  * fix kde wayland wrong icon issue
+
+  [ vilez ]
+  * feat: better support for XDG Base Directory
+
+  [ Fatih Altun ]
+  * Use GLib instead of getenv
+
+ -- Fatih Altun <fatih.altun@pardus.org.tr>  Tue, 16 Jul 2024 12:32:34 +0300
+
 pardus-night-light (0.1.1) unstable; urgency=medium
 
   [ Hugo Carvalho ]
