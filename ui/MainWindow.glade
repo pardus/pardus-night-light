@@ -180,9 +180,9 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="opacity">0.50196078431372548</property>
-                <property name="label">©TÜBİTAK ULAKBİM | 2024</property>
+                <property name="label">© TÜBİTAK BİLGEM</property>
                 <attributes>
-                  <attribute name="size" value="10000"/>
+                  <attribute name="weight" value="light"/>
                 </attributes>
               </object>
               <packing>
@@ -233,7 +233,7 @@
     <property name="transient-for">ui_main_window</property>
     <property name="program-name">Pardus Night Light</property>
     <property name="version">0.1.0</property>
-    <property name="copyright">© 2024 Pardus</property>
+    <property name="copyright">© TÜBİTAK BİLGEM</property>
     <property name="comments" translatable="yes">Simple color temperature application based on Redshift.</property>
     <property name="website">https://github.com/pardus/pardus-night-light</property>
     <property name="authors">Fatih Altun &lt;fatih.altun@pardus.org.tr&gt;</property>
