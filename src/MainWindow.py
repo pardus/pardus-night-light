@@ -97,6 +97,7 @@ class MainWindow(object):
             self.main_window.show_all()
 
         self.set_indicator()
+        self.control_args()
 
     def define_components(self):
         self.main_window = self.GtkBuilder.get_object("ui_main_window")
@@ -129,6 +130,8 @@ class MainWindow(object):
                 self.night_switch.set_state(True)
             else:
                 print("value {} not supported yet.".format(value))
+        elif "tray" in self.Application.args.keys():
+            self.main_window.set_visible(False)
         else:
             self.main_window.present()
 
