@@ -130,6 +130,17 @@ class MainWindow(object):
                 self.night_switch.set_state(True)
             else:
                 print("value {} not supported yet.".format(value))
+        elif "color" in self.Application.args.keys():
+            try:
+                value = int(self.Application.args["color"])
+                if value not in range(1500, 5501):
+                    print("The value should be between 1500 and 5500. Your value is: {}".format(value))
+                    return
+            except Exception as e:
+                print("{}".format(e))
+                print("invalid arg")
+                return
+            self.temp_adjusment.set_value(value)
         elif "tray" in self.Application.args.keys():
             self.main_window.set_visible(False)
         else:

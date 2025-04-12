@@ -40,6 +40,15 @@ class Application(Gtk.Application):
             None,
         )
 
+        self.add_main_option(
+            "color",
+            ord("c"),
+            GLib.OptionFlags(0),
+            GLib.OptionArg(1),
+            "Set the color",
+            None,
+        )
+
     def do_activate(self):
         # We only allow a single window and raise any existing ones
         if not self.window:
