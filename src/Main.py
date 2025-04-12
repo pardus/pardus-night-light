@@ -31,6 +31,15 @@ class Application(Gtk.Application):
             None,
         )
 
+        self.add_main_option(
+            "set",
+            ord("s"),
+            GLib.OptionFlags(0),
+            GLib.OptionArg(1),
+            "Set the status",
+            None,
+        )
+
     def do_activate(self):
         # We only allow a single window and raise any existing ones
         if not self.window:
@@ -38,7 +47,8 @@ class Application(Gtk.Application):
             # when the last one is closed the application shuts down
             self.window = MainWindow(self)
         else:
-            self.window.main_window.present()
+            self.window.control_args()
+            # self.window.main_window.present()
 
     def do_command_line(self, command_line):
         options = command_line.get_options_dict()

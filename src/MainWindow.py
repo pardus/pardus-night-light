@@ -112,6 +112,26 @@ class MainWindow(object):
         self.icon_passive = "pardus-night-light-off-symbolic" if system_wide else "display-brightness-symbolic"
         self.make_first_sleep = True
 
+    def control_args(self):
+        if "set" in self.Application.args.keys():
+            try:
+                value = int(self.Application.args["set"])
+            except Exception as e:
+                print("{}".format(e))
+                print("invalid arg. 0 for disable, 1 for enable")
+                return
+            if value == 0:
+                # disable
+                self.night_switch.set_state(False)
+
+            elif value == 1:
+                # enable
+                self.night_switch.set_state(True)
+            else:
+                print("value {} not supported yet.".format(value))
+        else:
+            self.main_window.present()
+
     def user_settings(self):
         self.UserSettings = UserSettings()
         self.UserSettings.createDefaultConfig()
