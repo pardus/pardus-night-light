@@ -90,7 +90,7 @@ class MainWindow(object):
         signal.signal(signal.SIGINT, sighandler)
         signal.signal(signal.SIGTERM, sighandler)
 
-        if "tray" in self.Application.args.keys():
+        if any(key in self.Application.args for key in ["tray", "set", "color"]):
             self.main_window.set_visible(False)
         else:
             self.main_window.set_visible(True)
@@ -115,6 +115,7 @@ class MainWindow(object):
 
     def control_args(self):
         if "set" in self.Application.args.keys():
+            print("processing 'set' arg.")
             try:
                 value = int(self.Application.args["set"])
             except Exception as e:
@@ -131,6 +132,7 @@ class MainWindow(object):
             else:
                 print("value {} not supported yet.".format(value))
         elif "color" in self.Application.args.keys():
+            print("processing 'color' arg.")
             try:
                 value = int(self.Application.args["color"])
                 if value not in range(1500, 5501):
