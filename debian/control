@@ -13,6 +13,7 @@ Depends: ${misc:Depends},
          gir1.2-ayatanaappindicator3-0.1,
          gir1.2-glib-2.0,
          gir1.2-gtk-3.0,
+         python3-distro,
          redshift
 Description: Pardus Night Light.
  Simple color temperature application based on Redshift.
