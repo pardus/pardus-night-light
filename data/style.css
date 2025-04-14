@@ -20,3 +20,18 @@ scale trough {
     padding-bottom: 7px;
     background-image: linear-gradient(to right, mix(@bg_color, @ORANGE_100, 0.5), @ORANGE_500);
 }
+
+.low-label{
+    background-color: #FFF4E5;
+    border-radius: 8px;
+}
+
+.medium-label{
+    background-color: #FFD1A3;
+    border-radius: 8px;
+}
+
+.high-label{
+    background-color: #FF9F46;
+    border-radius: 8px;
+}

@@ -10,7 +10,7 @@ import os
 import signal
 import subprocess
 import time
-
+import distro
 import gi
 
 gi.require_version("GLib", "2.0")
@@ -107,11 +107,21 @@ class MainWindow(object):
         self.temp_scale = self.GtkBuilder.get_object("ui_temp_scale")
         self.temp_adjusment = self.GtkBuilder.get_object("ui_temp_adjusment")
 
+        self.ui_main_box = self.GtkBuilder.get_object("ui_main_box")
+        self.ui_submain_box = self.GtkBuilder.get_object("ui_submain_box")
+        self.ui_mainlabels_box = self.GtkBuilder.get_object("ui_mainlabels_box")
+        self.ui_mainwidgets_box = self.GtkBuilder.get_object("ui_mainwidgets_box")
+
+        self.ui_tempcolor_stack = self.GtkBuilder.get_object("ui_tempcolor_stack")
+        self.ui_temp_box = self.GtkBuilder.get_object("ui_temp_box")
+
     def define_variables(self):
         system_wide = "usr/share" in os.path.dirname(os.path.abspath(__file__))
         self.icon_active = "pardus-night-light-on-symbolic" if system_wide else "night-light-symbolic"
         self.icon_passive = "pardus-night-light-off-symbolic" if system_wide else "display-brightness-symbolic"
         self.make_first_sleep = True
+        self.etap = False
+        self.temp_color = {"low": 5500, "medium": 4000, "high": 2500}
 
     def control_args(self):
         if "set" in self.Application.args.keys():
@@ -142,7 +152,10 @@ class MainWindow(object):
                 print("{}".format(e))
                 print("invalid arg")
                 return
-            self.temp_adjusment.set_value(value)
+            if self.etap:
+                self.set_color_temp(value)
+            else:
+                self.temp_adjusment.set_value(value)
         elif "tray" in self.Application.args.keys():
             self.main_window.set_visible(False)
         else:
@@ -154,9 +167,29 @@ class MainWindow(object):
         self.UserSettings.readConfig()
 
     def init_ui(self):
+
+        if "etap" in distro.name().lower() and "etap" in distro.codename():
+            print("ETAP detected.")
+            self.etap = True
+
+        self.etap = True
+
+        if self.etap:
+            self.ui_tempcolor_stack.set_visible_child_name("button")
+            self.ui_main_box.set_spacing(0)
+            self.ui_mainlabels_box.set_spacing(0)
+            self.ui_mainwidgets_box.set_spacing(0)
+            self.ui_submain_box.set_margin_top(0)
+            self.init_etap_tempcolor_buttons()
+        else:
+            self.ui_tempcolor_stack.set_visible_child_name("scale")
+
         self.night_switch.set_state(self.UserSettings.config_status)
-        self.temp_scale.set_sensitive(self.UserSettings.config_status)
-        self.temp_adjusment.set_value(self.UserSettings.config_temp)
+        if self.etap:
+            self.ui_temp_box.set_sensitive(self.UserSettings.config_status)
+        else:
+            self.temp_scale.set_sensitive(self.UserSettings.config_status)
+            self.temp_adjusment.set_value(self.UserSettings.config_temp)
         self.autostart_switch.set_state(self.UserSettings.config_autostart)
         if not self.UserSettings.config_status:
             subprocess.run(["redshift", "-x"])
@@ -166,6 +199,64 @@ class MainWindow(object):
             self.main_window.set_default_icon_from_file(
                 os.path.dirname(os.path.abspath(__file__)) + "/../data/pardus-night-light.svg")
             self.about_dialog.set_logo(None)
+
+    def init_etap_tempcolor_buttons(self):
+        self.low_button = Gtk.Button.new()
+        self.low_button.name = "low"
+        self.low_button.connect("clicked", self.on_temp_button_clicked)
+        low_box = Gtk.Box.new(Gtk.Orientation.VERTICAL, 8)
+        low_box.set_homogeneous(True)
+        low_box.set_margin_top(3)
+        low_color_label = Gtk.Label.new()
+        low_color_label.set_size_request(-1, 34)
+        low_color_label.set_margin_start(13)
+        low_color_label.set_margin_end(13)
+        low_color_label.get_style_context().add_class("low-label")
+        low_text_label = Gtk.Label.new()
+        low_text_label.set_text(_("Low"))
+        low_box.pack_start(low_color_label, False, True, 0)
+        low_box.pack_start(low_text_label, False, True, 0)
+        self.low_button.add(low_box)
+
+        self.medium_button = Gtk.Button.new()
+        self.medium_button.name = "medium"
+        self.medium_button.connect("clicked", self.on_temp_button_clicked)
+        medium_box = Gtk.Box.new(Gtk.Orientation.VERTICAL, 8)
+        medium_box.set_homogeneous(True)
+        medium_box.set_margin_top(3)
+        medium_color_label = Gtk.Label.new()
+        medium_color_label.set_size_request(-1, 34)
+        medium_color_label.set_margin_start(13)
+        medium_color_label.set_margin_end(13)
+        medium_color_label.get_style_context().add_class("medium-label")
+        medium_text_label = Gtk.Label.new()
+        medium_text_label.set_text(_("Medium"))
+        medium_box.pack_start(medium_color_label, False, True, 0)
+        medium_box.pack_start(medium_text_label, False, True, 0)
+        self.medium_button.add(medium_box)
+
+        self.high_button = Gtk.Button.new()
+        self.high_button.name = "high"
+        self.high_button.connect("clicked", self.on_temp_button_clicked)
+        high_box = Gtk.Box.new(Gtk.Orientation.VERTICAL, 8)
+        high_box.set_homogeneous(True)
+        high_box.set_margin_top(3)
+        high_color_label = Gtk.Label.new()
+        high_color_label.set_size_request(-1, 34)
+        high_color_label.set_margin_start(13)
+        high_color_label.set_margin_end(13)
+        high_color_label.get_style_context().add_class("high-label")
+        high_text_label = Gtk.Label.new()
+        high_text_label.set_text(_("High"))
+        high_box.pack_start(high_color_label, False, True, 0)
+        high_box.pack_start(high_text_label, False, True, 0)
+        self.high_button.add(high_box)
+
+        self.ui_temp_box.add(self.low_button)
+        self.ui_temp_box.add(self.medium_button)
+        self.ui_temp_box.add(self.high_button)
+
+        self.ui_temp_box.show_all()
 
     def init_indicator(self):
         self.indicator = appindicator.Indicator.new(
@@ -224,6 +315,49 @@ class MainWindow(object):
             self.about_dialog.hide()
         self.main_window.get_application().quit()
 
+    # Set color temp function for ETAP
+    def set_color_temp(self, temperature):
+        if self.UserSettings.config_status:
+            subprocess.run(["redshift", "-P", "-O", "{}".format(temperature)])
+
+        if temperature == self.temp_color["low"]:
+            self.low_button.get_style_context().add_class("suggested-action")
+            self.medium_button.get_style_context().remove_class("suggested-action")
+            self.high_button.get_style_context().remove_class("suggested-action")
+        elif temperature == self.temp_color["medium"]:
+            self.low_button.get_style_context().remove_class("suggested-action")
+            self.medium_button.get_style_context().add_class("suggested-action")
+            self.high_button.get_style_context().remove_class("suggested-action")
+        elif temperature == self.temp_color["high"]:
+            self.low_button.get_style_context().remove_class("suggested-action")
+            self.medium_button.get_style_context().remove_class("suggested-action")
+            self.high_button.get_style_context().add_class("suggested-action")
+        else:
+            self.low_button.get_style_context().remove_class("suggested-action")
+            self.medium_button.get_style_context().remove_class("suggested-action")
+            self.high_button.get_style_context().remove_class("suggested-action")
+
+        user_temp = self.UserSettings.config_temp
+        if temperature != user_temp:
+            self.UserSettings.writeConfig(self.UserSettings.config_status, temperature,
+                                          self.UserSettings.config_autostart)
+            self.user_settings()
+
+    # Color temperature button clicks for ETAP
+    def on_temp_button_clicked(self, button):
+        if self.UserSettings.config_status:
+            subprocess.run(["redshift", "-P", "-O", "{}".format(self.temp_color[button.name])])
+
+        for row_button in self.ui_temp_box:
+            row_button.get_style_context().remove_class("suggested-action")
+        button.get_style_context().add_class("suggested-action")
+
+        user_temp = self.UserSettings.config_temp
+        if self.temp_color[button.name] != user_temp:
+            self.UserSettings.writeConfig(self.UserSettings.config_status, self.temp_color[button.name],
+                                          self.UserSettings.config_autostart)
+            self.user_settings()
+
     def on_ui_temp_adjusment_value_changed(self, adjusment):
         value = "{:0.0f}".format(adjusment.get_value())
         print("on_ui_temp_adjusment_value_changed", value)
@@ -237,13 +371,34 @@ class MainWindow(object):
             self.user_settings()
 
     def on_ui_night_switch_state_set(self, switch, state):
-        self.temp_scale.set_sensitive(state)
+        if self.etap:
+            self.ui_temp_box.set_sensitive(state)
+        else:
+            self.temp_scale.set_sensitive(state)
         if state:
             if "tray" in self.Application.args.keys() and self.make_first_sleep:
                 self.make_first_sleep = False
                 time.sleep(5)
             subprocess.run(["redshift", "-P", "-O", "{:0.0f}".format(self.UserSettings.config_temp)])
-            self.temp_adjusment.set_value(self.UserSettings.config_temp)
+            if self.etap:
+                if self.UserSettings.config_temp == self.temp_color["low"]:
+                    self.low_button.get_style_context().add_class("suggested-action")
+                    self.medium_button.get_style_context().remove_class("suggested-action")
+                    self.high_button.get_style_context().remove_class("suggested-action")
+                elif self.UserSettings.config_temp == self.temp_color["medium"]:
+                    self.low_button.get_style_context().remove_class("suggested-action")
+                    self.medium_button.get_style_context().add_class("suggested-action")
+                    self.high_button.get_style_context().remove_class("suggested-action")
+                elif self.UserSettings.config_temp == self.temp_color["high"]:
+                    self.low_button.get_style_context().remove_class("suggested-action")
+                    self.medium_button.get_style_context().remove_class("suggested-action")
+                    self.high_button.get_style_context().add_class("suggested-action")
+                else:
+                    self.low_button.get_style_context().remove_class("suggested-action")
+                    self.medium_button.get_style_context().remove_class("suggested-action")
+                    self.high_button.get_style_context().remove_class("suggested-action")
+            else:
+                self.temp_adjusment.set_value(self.UserSettings.config_temp)
             self.item_action.set_label(_("Disable"))
             self.indicator.set_icon(self.icon_active)
         else:
