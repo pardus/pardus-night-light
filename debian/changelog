@@ -1,3 +1,18 @@
+pardus-night-light (0.3.0) unstable; urgency=medium
+
+  * Update app screenshot
+  * Add set arg for enable, disable from cli
+  * Add control_args func to MainWindow init
+  * Add color arg for set temperature from cli
+  * Add initial arg control to MainWindow for set and color too
+  * Add color temperature buttons layout for etap
+  * Update pot file
+  * Update Turkish translations
+  * Fix typo
+  * Add python3-distro to depends
+
+ -- Fatih Altun <fatih.altun@pardus.org.tr>  Tue, 15 Apr 2025 01:02:40 +0300
+
 pardus-night-light (0.2.1) unstable; urgency=medium
 
   * Update copyright
