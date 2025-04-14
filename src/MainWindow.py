@@ -172,8 +172,6 @@ class MainWindow(object):
             print("ETAP detected.")
             self.etap = True
 
-        self.etap = True
-
         if self.etap:
             self.ui_tempcolor_stack.set_visible_child_name("button")
             self.ui_main_box.set_spacing(0)
