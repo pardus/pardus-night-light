@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-15 00:57+0300\n"
-"PO-Revision-Date: 2025-04-15 00:58+0300\n"
-"Last-Translator: Fatih Altun <fatih.altun@pardus.org.tr>\n"
+"POT-Creation-Date: 2025-05-30 21:02+0300\n"
+"PO-Revision-Date: 2025-05-30 21:09+0300\n"
+"Last-Translator: Edip Hazuri <edip@medip.dev>\n"
 "Language-Team: Turkish <dev@pardus.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 42.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.6\n"
 
 #: ui/MainWindow.glade:51
 msgid "Night Light"
@@ -31,7 +31,7 @@ msgstr "Renk Sıcaklığı"
 msgid "Launch at startup"
 msgstr "Başlangıçta çalıştır"
 
-#: ui/MainWindow.glade:238 src/MainWindow.py:58 src/MainWindow.py:265
+#: ui/MainWindow.glade:238 src/MainWindow.py:59 src/MainWindow.py:264
 msgid "Pardus Night Light"
 msgstr "Pardus Gece Işığı"
 
@@ -44,41 +44,55 @@ msgstr "Redshift tabanlı basit renk sıcaklığı uygulaması."
 msgid "translator-credits"
 msgstr "Fatih Altun <fatih.altun@pardus.org.tr>"
 
-#: src/MainWindow.py:62
+#: src/MainWindow.py:63
 msgid "About Pardus Night Light"
 msgstr "Pardus Gece Işığı Hakkında"
 
-#: src/MainWindow.py:216
+#: src/MainWindow.py:215
 msgid "Low"
 msgstr "Düşük"
 
-#: src/MainWindow.py:233
+#: src/MainWindow.py:232
 msgid "Medium"
 msgstr "Orta"
 
-#: src/MainWindow.py:250
+#: src/MainWindow.py:249
 msgid "High"
 msgstr "Yüksek"
 
-#: src/MainWindow.py:273
+#: src/MainWindow.py:272
 msgid "Quit"
 msgstr "Çıkış"
 
-#: src/MainWindow.py:285 src/MainWindow.py:402
+#: src/MainWindow.py:284 src/MainWindow.py:401
 msgid "Disable"
 msgstr "Devre Dışı Bırak"
 
-#: src/MainWindow.py:288 src/MainWindow.py:406
+#: src/MainWindow.py:287 src/MainWindow.py:405
 msgid "Enable"
 msgstr "Etkinleştir"
 
-#: src/MainWindow.py:292 src/MainWindow.py:309
+#: src/MainWindow.py:291 src/MainWindow.py:308
 msgid "Hide App"
 msgstr "Gizle"
 
-#: src/MainWindow.py:294 src/MainWindow.py:306 src/MainWindow.py:428
+#: src/MainWindow.py:293 src/MainWindow.py:305 src/MainWindow.py:427
 msgid "Show App"
 msgstr "Göster"
+
+#: src/MainWindow.py:448
+msgid "Wayland Compatibility Warning"
+msgstr "Wayland Uyumluluk Uyarısı"
+
+#: src/MainWindow.py:452
+msgid ""
+"This application is based on Redshift, which does not work properly on "
+"Wayland. For best functionality, please use an X11 session or consider using "
+"your desktop environment's night light feature."
+msgstr ""
+"Bu uygulama Redshift tabanlı olduğundan Waylandda düzgün çalışmamaktadır. En "
+"iyi deneyim için, Lütfen X11 oturumuna geçin veya masaüstü ortamınızın gece "
+"ışığı özelliğini kullanın."
 
 #~ msgid "Based on Redshift"
 #~ msgstr "Redshift tabanlı"
