@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-15 00:57+0300\n"
+"POT-Creation-Date: 2025-05-30 21:02+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr ""
 msgid "Launch at startup"
 msgstr ""
 
-#: ui/MainWindow.glade:238 src/MainWindow.py:58 src/MainWindow.py:265
+#: ui/MainWindow.glade:238 src/MainWindow.py:59 src/MainWindow.py:264
 msgid "Pardus Night Light"
 msgstr ""
 
@@ -42,38 +42,49 @@ msgstr ""
 msgid "translator-credits"
 msgstr ""
 
-#: src/MainWindow.py:62
+#: src/MainWindow.py:63
 msgid "About Pardus Night Light"
 msgstr ""
 
-#: src/MainWindow.py:216
+#: src/MainWindow.py:215
 msgid "Low"
 msgstr ""
 
-#: src/MainWindow.py:233
+#: src/MainWindow.py:232
 msgid "Medium"
 msgstr ""
 
-#: src/MainWindow.py:250
+#: src/MainWindow.py:249
 msgid "High"
 msgstr ""
 
-#: src/MainWindow.py:273
+#: src/MainWindow.py:272
 msgid "Quit"
 msgstr ""
 
-#: src/MainWindow.py:285 src/MainWindow.py:402
+#: src/MainWindow.py:284 src/MainWindow.py:401
 msgid "Disable"
 msgstr ""
 
-#: src/MainWindow.py:288 src/MainWindow.py:406
+#: src/MainWindow.py:287 src/MainWindow.py:405
 msgid "Enable"
 msgstr ""
 
-#: src/MainWindow.py:292 src/MainWindow.py:309
+#: src/MainWindow.py:291 src/MainWindow.py:308
 msgid "Hide App"
 msgstr ""
 
-#: src/MainWindow.py:294 src/MainWindow.py:306 src/MainWindow.py:428
+#: src/MainWindow.py:293 src/MainWindow.py:305 src/MainWindow.py:427
 msgid "Show App"
+msgstr ""
+
+#: src/MainWindow.py:448
+msgid "Wayland Compatibility Warning"
+msgstr ""
+
+#: src/MainWindow.py:452
+msgid ""
+"This application is based on Redshift, which does not work properly on "
+"Wayland. For best functionality, please use an X11 session or consider using "
+"your desktop environment's night light feature."
 msgstr ""
