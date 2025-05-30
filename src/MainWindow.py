@@ -50,6 +50,7 @@ class MainWindow(object):
         self.define_variables()
         self.main_window.set_application(application)
 
+        self.check_wayland_and_warn()
         self.user_settings()
         self.set_autostart()
         self.init_indicator()
@@ -430,4 +431,28 @@ class MainWindow(object):
         subprocess.run(["redshift", "-x"])
         if self.about_dialog.is_visible():
             self.about_dialog.hide()
+        self.main_window.get_application().quit()
+
+    def check_wayland_and_warn(self):
+        wayland_display = os.environ.get('WAYLAND_DISPLAY')
+        xdg_session_type = os.environ.get('XDG_SESSION_TYPE')
+        
+        if not wayland_display or xdg_session_type != 'wayland':
+            return
+        
+        dialog = Gtk.MessageDialog(
+            parent=None,
+            flags=0,
+            message_type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.OK,
+            text=_("Wayland Compatibility Warning")
+        )
+        
+        dialog.format_secondary_text(
+            _("This application is based on Redshift, which does not work properly on Wayland. "
+              "For best functionality, please use an X11 session or consider using your desktop environment's night light feature.")
+        )
+        
+        dialog.run()
+        dialog.destroy()
         self.main_window.get_application().quit()
