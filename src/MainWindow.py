@@ -120,8 +120,11 @@ class MainWindow(object):
         self.icon_active = "pardus-night-light-on-symbolic" if system_wide else "night-light-symbolic"
         self.icon_passive = "pardus-night-light-off-symbolic" if system_wide else "display-brightness-symbolic"
         self.make_first_sleep = True
-        self.etap = False
         self.temp_color = {"low": 5500, "medium": 4000, "high": 2500}
+        self.etap = False
+        if "etap" in distro.name().lower() and "etap" in distro.codename():
+            print("ETAP detected.")
+            self.etap = True
 
     def control_args(self):
         if "set" in self.Application.args.keys():
@@ -167,10 +170,6 @@ class MainWindow(object):
         self.UserSettings.readConfig()
 
     def init_ui(self):
-
-        if "etap" in distro.name().lower() and "etap" in distro.codename():
-            print("ETAP detected.")
-            self.etap = True
 
         if self.etap:
             self.ui_tempcolor_stack.set_visible_child_name("button")
@@ -257,6 +256,8 @@ class MainWindow(object):
         self.ui_temp_box.show_all()
 
     def init_indicator(self):
+        if self.etap:
+            return
         self.indicator = appindicator.Indicator.new(
             "pardus-night-light", self.icon_active, appindicator.IndicatorCategory.APPLICATION_STATUS)
         self.indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
@@ -278,6 +279,8 @@ class MainWindow(object):
         self.indicator.set_menu(self.menu)
 
     def set_indicator(self):
+        if self.etap:
+            return
 
         if self.UserSettings.config_status:
             self.item_action.set_label(_("Disable"))
@@ -397,12 +400,14 @@ class MainWindow(object):
                     self.high_button.get_style_context().remove_class("suggested-action")
             else:
                 self.temp_adjusment.set_value(self.UserSettings.config_temp)
-            self.item_action.set_label(_("Disable"))
-            self.indicator.set_icon(self.icon_active)
+            if not self.etap:
+                self.item_action.set_label(_("Disable"))
+                self.indicator.set_icon(self.icon_active)
         else:
             subprocess.run(["redshift", "-x"])
-            self.item_action.set_label(_("Enable"))
-            self.indicator.set_icon(self.icon_passive)
+            if not self.etap:
+                self.item_action.set_label(_("Enable"))
+                self.indicator.set_icon(self.icon_passive)
 
         user_status = self.UserSettings.config_status
         if state != user_status:
@@ -423,7 +428,8 @@ class MainWindow(object):
 
     def on_ui_main_window_delete_event(self, widget, event):
         self.main_window.hide()
-        self.item_sh_app.set_label(_("Show App"))
+        if not self.etap:
+            self.item_sh_app.set_label(_("Show App"))
         return True
 
     def on_ui_main_window_destroy(self, widget, event):
