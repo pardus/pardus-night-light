@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-15 00:57+0300\n"
+"POT-Creation-Date: 2026-02-24 09:02+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,28 +17,36 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ui/MainWindow.glade:51
+#: ui/MainWindow.glade:79
 msgid "Night Light"
 msgstr ""
 
-#: ui/MainWindow.glade:64
+#: ui/MainWindow.glade:92
 msgid "Color Temperature"
 msgstr ""
 
-#: ui/MainWindow.glade:77
+#: ui/MainWindow.glade:105
 msgid "Launch at startup"
 msgstr ""
 
-#: ui/MainWindow.glade:238 src/MainWindow.py:58 src/MainWindow.py:265
+#: ui/MainWindow.glade:118
+msgid "Schedule"
+msgstr ""
+
+#: ui/MainWindow.glade:425
+msgid "Night light turns on at 18:00, turns off at 06:00."
+msgstr ""
+
+#: ui/MainWindow.glade:491 src/MainWindow.py:58 src/MainWindow.py:272
 msgid "Pardus Night Light"
 msgstr ""
 
-#: ui/MainWindow.glade:267
+#: ui/MainWindow.glade:520
 msgid "Simple color temperature application based on Redshift."
 msgstr ""
 
 #. Name Surname <example@examplemail.com>
-#: ui/MainWindow.glade:270
+#: ui/MainWindow.glade:523
 msgid "translator-credits"
 msgstr ""
 
@@ -46,34 +54,38 @@ msgstr ""
 msgid "About Pardus Night Light"
 msgstr ""
 
-#: src/MainWindow.py:216
+#: src/MainWindow.py:221
 msgid "Low"
 msgstr ""
 
-#: src/MainWindow.py:233
+#: src/MainWindow.py:238
 msgid "Medium"
 msgstr ""
 
-#: src/MainWindow.py:250
+#: src/MainWindow.py:255
 msgid "High"
 msgstr ""
 
-#: src/MainWindow.py:273
+#: src/MainWindow.py:280
 msgid "Quit"
 msgstr ""
 
-#: src/MainWindow.py:285 src/MainWindow.py:402
+#: src/MainWindow.py:294 src/MainWindow.py:434
 msgid "Disable"
 msgstr ""
 
-#: src/MainWindow.py:288 src/MainWindow.py:406
+#: src/MainWindow.py:297 src/MainWindow.py:439
 msgid "Enable"
 msgstr ""
 
-#: src/MainWindow.py:292 src/MainWindow.py:309
+#: src/MainWindow.py:301 src/MainWindow.py:340
 msgid "Hide App"
 msgstr ""
 
-#: src/MainWindow.py:294 src/MainWindow.py:306 src/MainWindow.py:428
+#: src/MainWindow.py:303 src/MainWindow.py:337 src/MainWindow.py:462
 msgid "Show App"
+msgstr ""
+
+#: src/MainWindow.py:322
+msgid "Night light turns on at {}, turns off at {}."
 msgstr ""

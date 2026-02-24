@@ -3,44 +3,53 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # Fatih Altun <fatih.altun@pardus.org.tr>, 2023-2025.
+# Emel Öztürk <emel.ozturk@pardus.org.tr>, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-15 00:57+0300\n"
-"PO-Revision-Date: 2025-04-15 00:58+0300\n"
-"Last-Translator: Fatih Altun <fatih.altun@pardus.org.tr>\n"
+"POT-Creation-Date: 2026-02-24 09:02+0300\n"
+"PO-Revision-Date: 2026-02-24 09:06+0300\n"
+"Last-Translator: Emel Öztürk <emel.ozturk@pardus.org.tr>\n"
 "Language-Team: Turkish <dev@pardus.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 42.0\n"
+"X-Generator: Gtranslator 48.0\n"
 
-#: ui/MainWindow.glade:51
+#: ui/MainWindow.glade:79
 msgid "Night Light"
 msgstr "Gece Işığı"
 
-#: ui/MainWindow.glade:64
+#: ui/MainWindow.glade:92
 msgid "Color Temperature"
 msgstr "Renk Sıcaklığı"
 
-#: ui/MainWindow.glade:77
+#: ui/MainWindow.glade:105
 msgid "Launch at startup"
 msgstr "Başlangıçta çalıştır"
 
-#: ui/MainWindow.glade:238 src/MainWindow.py:58 src/MainWindow.py:265
+#: ui/MainWindow.glade:118
+msgid "Schedule"
+msgstr "Zamanlama"
+
+#: ui/MainWindow.glade:425
+msgid "Night light turns on at 18:00, turns off at 06:00."
+msgstr "Gece ışığı 18:00'da açılır, 06:00'da kapanır."
+
+#: ui/MainWindow.glade:491 src/MainWindow.py:58 src/MainWindow.py:272
 msgid "Pardus Night Light"
 msgstr "Pardus Gece Işığı"
 
-#: ui/MainWindow.glade:267
+#: ui/MainWindow.glade:520
 msgid "Simple color temperature application based on Redshift."
 msgstr "Redshift tabanlı basit renk sıcaklığı uygulaması."
 
 #. Name Surname <example@examplemail.com>
-#: ui/MainWindow.glade:270
+#: ui/MainWindow.glade:523
 msgid "translator-credits"
 msgstr "Fatih Altun <fatih.altun@pardus.org.tr>"
 
@@ -48,37 +57,41 @@ msgstr "Fatih Altun <fatih.altun@pardus.org.tr>"
 msgid "About Pardus Night Light"
 msgstr "Pardus Gece Işığı Hakkında"
 
-#: src/MainWindow.py:216
+#: src/MainWindow.py:221
 msgid "Low"
 msgstr "Düşük"
 
-#: src/MainWindow.py:233
+#: src/MainWindow.py:238
 msgid "Medium"
 msgstr "Orta"
 
-#: src/MainWindow.py:250
+#: src/MainWindow.py:255
 msgid "High"
 msgstr "Yüksek"
 
-#: src/MainWindow.py:273
+#: src/MainWindow.py:280
 msgid "Quit"
 msgstr "Çıkış"
 
-#: src/MainWindow.py:285 src/MainWindow.py:402
+#: src/MainWindow.py:294 src/MainWindow.py:434
 msgid "Disable"
 msgstr "Devre Dışı Bırak"
 
-#: src/MainWindow.py:288 src/MainWindow.py:406
+#: src/MainWindow.py:297 src/MainWindow.py:439
 msgid "Enable"
 msgstr "Etkinleştir"
 
-#: src/MainWindow.py:292 src/MainWindow.py:309
+#: src/MainWindow.py:301 src/MainWindow.py:340
 msgid "Hide App"
 msgstr "Gizle"
 
-#: src/MainWindow.py:294 src/MainWindow.py:306 src/MainWindow.py:428
+#: src/MainWindow.py:303 src/MainWindow.py:337 src/MainWindow.py:462
 msgid "Show App"
 msgstr "Göster"
+
+#: src/MainWindow.py:322
+msgid "Night light turns on at {}, turns off at {}."
+msgstr "Gece ışığı {}'da açılır, {}'da kapanır."
 
 #~ msgid "Based on Redshift"
 #~ msgstr "Redshift tabanlı"
