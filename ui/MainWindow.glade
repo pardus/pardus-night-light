@@ -14,6 +14,34 @@
     <property name="page-increment">500</property>
     <signal name="value-changed" handler="on_ui_temp_adjusment_value_changed" swapped="no"/>
   </object>
+  <object class="GtkAdjustment" id="ui_start_hour_adj">
+    <property name="lower">0</property>
+    <property name="upper">23</property>
+    <property name="value">18</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="ui_start_minute_adj">
+    <property name="lower">0</property>
+    <property name="upper">59</property>
+    <property name="value">0</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">15</property>
+  </object>
+  <object class="GtkAdjustment" id="ui_end_hour_adj">
+    <property name="lower">0</property>
+    <property name="upper">23</property>
+    <property name="value">6</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="ui_end_minute_adj">
+    <property name="lower">0</property>
+    <property name="upper">59</property>
+    <property name="value">0</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">15</property>
+  </object>
   <object class="GtkWindow" id="ui_main_window">
     <property name="can-focus">False</property>
     <property name="resizable">False</property>
@@ -80,6 +108,19 @@
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="ui_schedule_label">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Schedule</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>
@@ -173,6 +214,21 @@
                     <property name="position">2</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkSwitch" id="ui_schedule_switch">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="margin-start">3</property>
+                    <signal name="state-set" handler="on_ui_schedule_switch_state_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -185,6 +241,203 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <!-- Schedule time picker: always visible, sensitive controlled by schedule switch -->
+          <object class="GtkBox" id="ui_schedule_box">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="halign">center</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">8</property>
+            <property name="margin-bottom">5</property>
+            <property name="sensitive">False</property>
+            <child>
+              <object class="GtkBox" id="ui_schedule_times_box">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="spacing">5</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-end">4</property>
+                    <property name="icon-name">weather-clear-night-symbolic</property>
+                    <property name="icon-size">2</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="ui_start_hour_spin">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="adjustment">ui_start_hour_adj</property>
+                    <property name="numeric">True</property>
+                    <property name="wrap">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="width-chars">2</property>
+                    <property name="max-width-chars">2</property>
+                    <signal name="output" handler="on_schedule_spin_output" swapped="no"/>
+                    <signal name="value-changed" handler="on_schedule_time_changed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label">:</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="ui_start_minute_spin">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="adjustment">ui_start_minute_adj</property>
+                    <property name="numeric">True</property>
+                    <property name="wrap">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="width-chars">2</property>
+                    <property name="max-width-chars">2</property>
+                    <signal name="output" handler="on_schedule_spin_output" swapped="no"/>
+                    <signal name="value-changed" handler="on_schedule_time_changed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label">—</property>
+                    <property name="margin-start">10</property>
+                    <property name="margin-end">10</property>
+                    <attributes>
+                      <attribute name="weight" value="light"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-end">4</property>
+                    <property name="icon-name">weather-clear-symbolic</property>
+                    <property name="icon-size">2</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="ui_end_hour_spin">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="adjustment">ui_end_hour_adj</property>
+                    <property name="numeric">True</property>
+                    <property name="wrap">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="width-chars">2</property>
+                    <property name="max-width-chars">2</property>
+                    <signal name="output" handler="on_schedule_spin_output" swapped="no"/>
+                    <signal name="value-changed" handler="on_schedule_time_changed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label">:</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="ui_end_minute_spin">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="adjustment">ui_end_minute_adj</property>
+                    <property name="numeric">True</property>
+                    <property name="wrap">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="width-chars">2</property>
+                    <property name="max-width-chars">2</property>
+                    <signal name="output" handler="on_schedule_spin_output" swapped="no"/>
+                    <signal name="value-changed" handler="on_schedule_time_changed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">8</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="ui_schedule_info_label">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="opacity">0.6</property>
+                <property name="label" translatable="yes">Night light turns on at 18:00, turns off at 06:00.</property>
+                <attributes>
+                  <attribute name="scale" value="0.9"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
@@ -226,7 +479,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>

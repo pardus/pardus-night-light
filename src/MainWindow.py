@@ -115,6 +115,14 @@ class MainWindow(object):
         self.ui_tempcolor_stack = self.GtkBuilder.get_object("ui_tempcolor_stack")
         self.ui_temp_box = self.GtkBuilder.get_object("ui_temp_box")
 
+        self.schedule_switch = self.GtkBuilder.get_object("ui_schedule_switch")
+        self.schedule_box = self.GtkBuilder.get_object("ui_schedule_box")
+        self.schedule_info_label = self.GtkBuilder.get_object("ui_schedule_info_label")
+        self.start_hour_adj = self.GtkBuilder.get_object("ui_start_hour_adj")
+        self.start_minute_adj = self.GtkBuilder.get_object("ui_start_minute_adj")
+        self.end_hour_adj = self.GtkBuilder.get_object("ui_end_hour_adj")
+        self.end_minute_adj = self.GtkBuilder.get_object("ui_end_minute_adj")
+
     def define_variables(self):
         system_wide = "usr/share" in os.path.dirname(os.path.abspath(__file__))
         self.icon_active = "pardus-night-light-on-symbolic" if system_wide else "night-light-symbolic"
@@ -296,6 +304,26 @@ class MainWindow(object):
 
     def set_autostart(self):
         self.UserSettings.set_autostart(self.UserSettings.config_autostart)
+
+    def on_schedule_spin_output(self, spin):
+        spin.set_text("{:02d}".format(int(spin.get_adjustment().get_value())))
+        return True
+
+    def update_schedule_info(self):
+        start = "{:02d}:{:02d}".format(
+            int(self.start_hour_adj.get_value()),
+            int(self.start_minute_adj.get_value()))
+        end = "{:02d}:{:02d}".format(
+            int(self.end_hour_adj.get_value()),
+            int(self.end_minute_adj.get_value()))
+        self.schedule_info_label.set_text(
+            _("Night light turns on at {}, turns off at {}.").format(start, end))
+
+    def on_ui_schedule_switch_state_set(self, switch, state):
+        self.schedule_box.set_sensitive(state)
+
+    def on_schedule_time_changed(self, spin):
+        self.update_schedule_info()
 
     def on_menu_action(self, *args):
         self.night_switch.set_state(not self.UserSettings.config_status)
