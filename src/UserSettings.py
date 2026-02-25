@@ -21,6 +21,9 @@ class UserSettings(object):
         self.default_status = False
         self.default_temp = 5500
         self.default_autostart = False
+        self.default_schedule = False
+        self.default_schedule_start = "18:00"
+        self.default_schedule_end = "06:00"
 
         self.configdir = "{}/pardus/pardus-night-light/".format(GLib.get_user_config_dir())
         self.configfile = "settings.ini"
@@ -33,11 +36,17 @@ class UserSettings(object):
         self.config_status = self.default_status
         self.config_temp = self.default_temp
         self.config_autostart = self.default_autostart
+        self.config_schedule = self.default_schedule
+        self.config_schedule_start = self.default_schedule_start
+        self.config_schedule_end = self.default_schedule_end
 
     def createDefaultConfig(self, force=False):
         self.config['Main'] = {"status": self.default_status,
                                "temp": self.default_temp,
-                               "autostart": self.default_autostart}
+                               "autostart": self.default_autostart,
+                               "schedule": self.default_schedule,
+                               "schedule_start": self.default_schedule_start,
+                               "schedule_end": self.default_schedule_end}
 
         if not Path.is_file(Path(self.configdir + self.configfile)) or force:
             if self.createDir(self.configdir):
@@ -50,6 +59,12 @@ class UserSettings(object):
             self.config_status = self.config.getboolean('Main', 'status')
             self.config_temp = self.config.getint('Main', 'temp')
             self.config_autostart = self.config.getboolean('Main', 'autostart')
+            self.config_schedule = self.config.getboolean('Main', 'schedule',
+                                                          fallback=self.default_schedule)
+            self.config_schedule_start = self.config.get('Main', 'schedule_start',
+                                                         fallback=self.default_schedule_start)
+            self.config_schedule_end = self.config.get('Main', 'schedule_end',
+                                                       fallback=self.default_schedule_end)
 
         except Exception as e:
             print("{}".format(e))
@@ -58,13 +73,24 @@ class UserSettings(object):
             self.config_status = self.default_status
             self.config_temp = self.default_temp
             self.config_autostart = self.default_autostart
+            self.config_schedule = self.default_schedule
+            self.config_schedule_start = self.default_schedule_start
+            self.config_schedule_end = self.default_schedule_end
             try:
                 self.createDefaultConfig(force=True)
             except Exception as e:
                 print("self.createDefaultConfig(force=True) : {}".format(e))
 
-    def writeConfig(self, status, temp, autostart):
-        self.config['Main'] = {"status": status, "temp": temp, "autostart": autostart}
+    def writeConfig(self, status, temp, autostart,
+                    schedule=None, schedule_start=None, schedule_end=None):
+        self.config['Main'] = {
+            "status": status,
+            "temp": temp,
+            "autostart": autostart,
+            "schedule": schedule if schedule is not None else self.config_schedule,
+            "schedule_start": schedule_start if schedule_start is not None else self.config_schedule_start,
+            "schedule_end": schedule_end if schedule_end is not None else self.config_schedule_end
+        }
         if self.createDir(self.configdir):
             with open(self.configdir + self.configfile, "w") as cf:
                 self.config.write(cf)
