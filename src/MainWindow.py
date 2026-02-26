@@ -10,12 +10,13 @@ import os
 import signal
 import subprocess
 import time
+from datetime import datetime, timedelta
 import distro
 import gi
 
 gi.require_version("GLib", "2.0")
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, GLib
 
 try:
     gi.require_version('AppIndicator3', '0.1')
@@ -82,6 +83,7 @@ class MainWindow(object):
         # With the others GTK_STYLE_PROVIDER_PRIORITY values get the same result.
 
         def sighandler(signum, frame):
+            self.cancel_schedule_timer()
             subprocess.run(["redshift", "-x"])
             if self.about_dialog.is_visible():
                 self.about_dialog.hide()
@@ -133,6 +135,9 @@ class MainWindow(object):
         if "etap" in distro.name().lower() and "etap" in distro.codename():
             print("ETAP detected.")
             self.etap = True
+
+        self.schedule_timer_id = None
+        self.schedule_init = False
 
     def control_args(self):
         if "set" in self.Application.args.keys():
@@ -204,6 +209,8 @@ class MainWindow(object):
             self.main_window.set_default_icon_from_file(
                 os.path.dirname(os.path.abspath(__file__)) + "/../data/pardus-night-light.svg")
             self.about_dialog.set_logo(None)
+
+        self.init_schedule_ui()
 
     def init_etap_tempcolor_buttons(self):
         self.low_button = Gtk.Button.new()
@@ -322,8 +329,134 @@ class MainWindow(object):
     def on_ui_schedule_switch_state_set(self, switch, state):
         self.schedule_box.set_sensitive(state)
 
+        if self.schedule_init:
+            return
+
+        self.save_schedule_config(schedule=state)
+
+        if state:
+            self.start_schedule()
+        else:
+            self.cancel_schedule_timer()
+
     def on_schedule_time_changed(self, spin):
         self.update_schedule_info()
+
+        if self.schedule_init:
+            return
+
+        self.save_schedule_config()
+
+        if self.UserSettings.config_schedule:
+            self.start_schedule()
+
+    def save_schedule_config(self, schedule=None):
+        start_str = "{:02d}:{:02d}".format(
+            int(self.start_hour_adj.get_value()),
+            int(self.start_minute_adj.get_value()))
+        end_str = "{:02d}:{:02d}".format(
+            int(self.end_hour_adj.get_value()),
+            int(self.end_minute_adj.get_value()))
+        self.UserSettings.writeConfig(
+            self.UserSettings.config_status, self.UserSettings.config_temp,
+            self.UserSettings.config_autostart,
+            schedule=schedule if schedule is not None else self.UserSettings.config_schedule,
+            schedule_start=start_str, schedule_end=end_str)
+        self.user_settings()
+
+    def init_schedule_ui(self):
+        self.schedule_init = True
+
+        try:
+            sh, sm = self.UserSettings.config_schedule_start.split(":")
+            self.start_hour_adj.set_value(int(sh))
+            self.start_minute_adj.set_value(int(sm))
+        except (ValueError, AttributeError):
+            self.start_hour_adj.set_value(18)
+            self.start_minute_adj.set_value(0)
+
+        try:
+            eh, em = self.UserSettings.config_schedule_end.split(":")
+            self.end_hour_adj.set_value(int(eh))
+            self.end_minute_adj.set_value(int(em))
+        except (ValueError, AttributeError):
+            self.end_hour_adj.set_value(6)
+            self.end_minute_adj.set_value(0)
+
+        self.schedule_switch.set_state(self.UserSettings.config_schedule)
+        self.schedule_box.set_sensitive(self.UserSettings.config_schedule)
+        self.update_schedule_info()
+
+        self.schedule_init = False
+
+        if self.UserSettings.config_schedule:
+            self.start_schedule()
+
+    def is_in_schedule_range(self):
+        now = datetime.now()
+        current = now.hour * 60 + now.minute
+
+        start = int(self.start_hour_adj.get_value()) * 60 + int(self.start_minute_adj.get_value())
+        end = int(self.end_hour_adj.get_value()) * 60 + int(self.end_minute_adj.get_value())
+
+        if start == end:
+            return True
+        elif start < end:
+            return start <= current < end
+        else:
+            return current >= start or current < end
+
+    def seconds_until_next_event(self):
+        now = datetime.now()
+        today = now.date()
+
+        start_h = int(self.start_hour_adj.get_value())
+        start_m = int(self.start_minute_adj.get_value())
+        end_h = int(self.end_hour_adj.get_value())
+        end_m = int(self.end_minute_adj.get_value())
+
+        if self.is_in_schedule_range():
+            target = datetime.combine(today, datetime.min.time().replace(hour=end_h, minute=end_m))
+            if target <= now:
+                target += timedelta(days=1)
+            return max(1, int((target - now).total_seconds())), False
+        else:
+            target = datetime.combine(today, datetime.min.time().replace(hour=start_h, minute=start_m))
+            if target <= now:
+                target += timedelta(days=1)
+            return max(1, int((target - now).total_seconds())), True
+
+    def cancel_schedule_timer(self):
+        if self.schedule_timer_id is not None:
+            GLib.source_remove(self.schedule_timer_id)
+            self.schedule_timer_id = None
+
+    def start_schedule(self):
+        """Apply correct state for now, then set one-shot timer for next transition."""
+        self.cancel_schedule_timer()
+
+        # Apply immediately
+        should_be_on = self.is_in_schedule_range()
+        if should_be_on != self.UserSettings.config_status:
+            self.night_switch.set_state(should_be_on)
+
+        # Schedule next transition
+        seconds, will_turn_on = self.seconds_until_next_event()
+        print("Schedule: next {} in {}h {}m".format(
+            "ON" if will_turn_on else "OFF", seconds // 3600, (seconds % 3600) // 60))
+
+        self.schedule_timer_id = GLib.timeout_add_seconds(
+            seconds, self.on_schedule_timer, will_turn_on)
+
+    def on_schedule_timer(self, will_turn_on):
+        self.schedule_timer_id = None
+
+        if not self.UserSettings.config_schedule:
+            return False
+
+        self.night_switch.set_state(will_turn_on)
+        self.start_schedule()
+        return False
 
     def on_menu_action(self, *args):
         self.night_switch.set_state(not self.UserSettings.config_status)
@@ -339,6 +472,7 @@ class MainWindow(object):
             self.main_window.present()
 
     def on_menu_quit_app(self, *args):
+        self.cancel_schedule_timer()
         subprocess.run(["redshift", "-x"])
         if self.about_dialog.is_visible():
             self.about_dialog.hide()
@@ -461,6 +595,7 @@ class MainWindow(object):
         return True
 
     def on_ui_main_window_destroy(self, widget, event):
+        self.cancel_schedule_timer()
         subprocess.run(["redshift", "-x"])
         if self.about_dialog.is_visible():
             self.about_dialog.hide()
