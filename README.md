@@ -4,6 +4,9 @@ Pardus Night Light is a night light application based on redshift.
 
 Redshift adjusts the color temperature of your screen according to your surroundings.This may help your eyes hurt less if you are working in front of the screen at night.
 
+On Wayland and X11, the app automatically uses the native backend for your desktop.
+GNOME Night Light (gsettings), KDE Night Color (D-Bus), gammastep for wlroots compositors (Sway, Hyprland), or redshift as fallback.
+
 [![Packaging status](https://repology.org/badge/vertical-allrepos/pardus-night-light.svg)](https://repology.org/project/pardus-night-light/versions)
 
 ### **Dependencies**
