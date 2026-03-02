@@ -8,7 +8,6 @@ Created on Sat Feb  5 19:05:13 2022
 
 import os
 import signal
-import subprocess
 import time
 from datetime import datetime, timedelta
 import distro
@@ -27,6 +26,7 @@ except:
     from gi.repository import AyatanaAppIndicator3 as appindicator
 
 from UserSettings import UserSettings
+from ColorBackend import ColorBackend
 
 import locale
 from locale import gettext as _
@@ -84,7 +84,7 @@ class MainWindow(object):
 
         def sighandler(signum, frame):
             self.cancel_schedule_timer()
-            subprocess.run(["redshift", "-x"])
+            self.backend.reset()
             if self.about_dialog.is_visible():
                 self.about_dialog.hide()
             self.main_window.get_application().quit()
@@ -138,6 +138,8 @@ class MainWindow(object):
 
         self.schedule_timer_id = None
         self.schedule_init = False
+
+        self.backend = ColorBackend()
 
     def control_args(self):
         if "set" in self.Application.args.keys():
@@ -202,7 +204,7 @@ class MainWindow(object):
             self.temp_adjusment.set_value(self.UserSettings.config_temp)
         self.autostart_switch.set_state(self.UserSettings.config_autostart)
         if not self.UserSettings.config_status:
-            subprocess.run(["redshift", "-x"])
+            self.backend.reset()
 
         system_wide = "usr/share" in os.path.dirname(os.path.abspath(__file__))
         if not system_wide:
@@ -473,7 +475,7 @@ class MainWindow(object):
 
     def on_menu_quit_app(self, *args):
         self.cancel_schedule_timer()
-        subprocess.run(["redshift", "-x"])
+        self.backend.reset()
         if self.about_dialog.is_visible():
             self.about_dialog.hide()
         self.main_window.get_application().quit()
@@ -481,7 +483,7 @@ class MainWindow(object):
     # Set color temp function for ETAP
     def set_color_temp(self, temperature):
         if self.UserSettings.config_status:
-            subprocess.run(["redshift", "-P", "-O", "{}".format(temperature)])
+            self.backend.apply(temperature)
 
         if temperature == self.temp_color["low"]:
             self.low_button.get_style_context().add_class("suggested-action")
@@ -509,7 +511,7 @@ class MainWindow(object):
     # Color temperature button clicks for ETAP
     def on_temp_button_clicked(self, button):
         if self.UserSettings.config_status:
-            subprocess.run(["redshift", "-P", "-O", "{}".format(self.temp_color[button.name])])
+            self.backend.apply(self.temp_color[button.name])
 
         for row_button in self.ui_temp_box:
             row_button.get_style_context().remove_class("suggested-action")
@@ -522,11 +524,11 @@ class MainWindow(object):
             self.user_settings()
 
     def on_ui_temp_adjusment_value_changed(self, adjusment):
-        value = "{:0.0f}".format(adjusment.get_value())
+        value = int(adjusment.get_value())
         print("on_ui_temp_adjusment_value_changed", value)
 
         if self.UserSettings.config_status:
-            subprocess.run(["redshift", "-P", "-O", value])
+            self.backend.apply(value)
 
         user_temp = self.UserSettings.config_temp
         if value != user_temp:
@@ -542,7 +544,7 @@ class MainWindow(object):
             if "tray" in self.Application.args.keys() and self.make_first_sleep:
                 self.make_first_sleep = False
                 time.sleep(5)
-            subprocess.run(["redshift", "-P", "-O", "{:0.0f}".format(self.UserSettings.config_temp)])
+            self.backend.apply(self.UserSettings.config_temp)
             if self.etap:
                 if self.UserSettings.config_temp == self.temp_color["low"]:
                     self.low_button.get_style_context().add_class("suggested-action")
@@ -566,7 +568,7 @@ class MainWindow(object):
                 self.item_action.set_label(_("Disable"))
                 self.indicator.set_icon(self.icon_active)
         else:
-            subprocess.run(["redshift", "-x"])
+            self.backend.reset()
             if not self.etap:
                 self.item_action.set_label(_("Enable"))
                 self.indicator.set_icon(self.icon_passive)
@@ -596,7 +598,7 @@ class MainWindow(object):
 
     def on_ui_main_window_destroy(self, widget, event):
         self.cancel_schedule_timer()
-        subprocess.run(["redshift", "-x"])
+        self.backend.reset()
         if self.about_dialog.is_visible():
             self.about_dialog.hide()
         self.main_window.get_application().quit()
