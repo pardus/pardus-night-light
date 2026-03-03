@@ -15,8 +15,11 @@ Depends: ${misc:Depends},
          gir1.2-gtk-3.0,
          python3-distro,
          redshift
+Suggests: gammastep
 Description: Pardus Night Light.
  Simple color temperature application based on Redshift.
  Redshift adjusts the color temperature of your screen
  according to your surroundings. This may help your eyes
  hurt less if you are working in front of the screen at night.
+ Depending on the desktop, uses redshift, GNOME Night Light,
+ KDE Night Color, or gammastep.
