@@ -84,6 +84,7 @@ class MainWindow(object):
 
         def sighandler(signum, frame):
             self.cancel_schedule_timer()
+            self.backend.sync_disconnect()
             self.backend.reset()
             if self.about_dialog.is_visible():
                 self.about_dialog.hide()
@@ -213,6 +214,9 @@ class MainWindow(object):
             self.about_dialog.set_logo(None)
 
         self.init_schedule_ui()
+
+        # GNOME bidirectional sync (no-op if not GNOME)
+        self.backend.sync_init(self)
 
     def init_etap_tempcolor_buttons(self):
         self.low_button = Gtk.Button.new()
@@ -352,6 +356,12 @@ class MainWindow(object):
         if self.UserSettings.config_schedule:
             self.start_schedule()
 
+        self.backend.sync_schedule(
+            int(self.start_hour_adj.get_value()),
+            int(self.start_minute_adj.get_value()),
+            int(self.end_hour_adj.get_value()),
+            int(self.end_minute_adj.get_value()))
+
     def save_schedule_config(self, schedule=None):
         start_str = "{:02d}:{:02d}".format(
             int(self.start_hour_adj.get_value()),
@@ -475,6 +485,7 @@ class MainWindow(object):
 
     def on_menu_quit_app(self, *args):
         self.cancel_schedule_timer()
+        self.backend.sync_disconnect()
         self.backend.reset()
         if self.about_dialog.is_visible():
             self.about_dialog.hide()
@@ -598,6 +609,7 @@ class MainWindow(object):
 
     def on_ui_main_window_destroy(self, widget, event):
         self.cancel_schedule_timer()
+        self.backend.sync_disconnect()
         self.backend.reset()
         if self.about_dialog.is_visible():
             self.about_dialog.hide()
