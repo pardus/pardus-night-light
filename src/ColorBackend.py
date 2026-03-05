@@ -18,14 +18,10 @@ import os
 import shutil
 import subprocess
 
-try:
-    import gi
-    gi.require_version('Gio', '2.0')
-    gi.require_version('GLib', '2.0')
-    from gi.repository import Gio, GLib
-except (ImportError, ValueError):
-    Gio = None
-    GLib = None
+import gi
+gi.require_version('Gio', '2.0')
+gi.require_version('GLib', '2.0')
+from gi.repository import Gio, GLib
 
 
 # GNOME hour conversion helpers
@@ -84,8 +80,6 @@ class ColorBackend:
 
     # GNOME
     def init_gnome_backend(self):
-        if Gio is None:
-            return
         try:
             source = Gio.SettingsSchemaSource.get_default()
             schema_id = 'org.gnome.settings-daemon.plugins.color'
@@ -219,8 +213,6 @@ class ColorBackend:
 
     # KDE
     def init_kde_backend(self):
-        if Gio is None or GLib is None:
-            return
         try:
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             proxy = Gio.DBusProxy.new_sync(
