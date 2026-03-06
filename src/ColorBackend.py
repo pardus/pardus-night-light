@@ -9,20 +9,40 @@ GNOME (GSettings), KDE (D-Bus), Wayland (gammastep), or redshift as fallback.
 Public API:
 - apply(kelvin)
 - reset()
+- sync_init(app)                    [GNOME only — bidirectional GSettings sync]
+- sync_schedule(sh, sm, eh, em)     [GNOME only]
+- sync_disconnect()                 [GNOME only — cleanup]
 """
 
 import os
 import shutil
 import subprocess
 
-try:
-    import gi
-    gi.require_version('Gio', '2.0')
-    gi.require_version('GLib', '2.0')
-    from gi.repository import Gio, GLib
-except (ImportError, ValueError):
-    Gio = None
-    GLib = None
+import gi
+gi.require_version('Gio', '2.0')
+gi.require_version('GLib', '2.0')
+from gi.repository import Gio, GLib
+
+
+# GNOME hour conversion helpers
+def gnome_to_hm(fractional_hour):
+    """
+    GNOME stores schedule as fractional double (20.5 = 20:30)
+    App stores as integer hour + integer minute
+    """
+    fractional_hour = max(0.0, min(fractional_hour, 24.0))
+    h = int(fractional_hour)
+    m = int(round((fractional_hour - h) * 60))
+    if m == 60:
+        h += 1
+        m = 0
+    if h >= 24:
+        h, m = 0, 0
+    return h, m
+
+
+def hm_to_gnome(hour, minute):
+    return float(hour) + float(minute) / 60.0
 
 
 class ColorBackend:
@@ -36,10 +56,14 @@ class ColorBackend:
     """
 
     def __init__(self):
-        # Default to redshift; will be overwritten by init_* methods as needed.
         self.apply_func = self.apply_redshift
         self.reset_func = self.reset_redshift
         self.backend_name = "redshift"
+
+        # GNOME sync state
+        self.settings = None
+        self.sync_handler_ids = []
+        self.syncing = False
 
         desktop = os.environ.get('XDG_CURRENT_DESKTOP', '').lower()
         session = os.environ.get('XDG_SESSION_TYPE', '').lower()
@@ -54,23 +78,20 @@ class ColorBackend:
         print("Selected backend: {} (session={}, desktop={})".format(
             self.backend_name, session or "unknown", desktop or "unknown"))
 
+    # GNOME
     def init_gnome_backend(self):
-        if Gio is None:
-            return
         try:
             source = Gio.SettingsSchemaSource.get_default()
             schema_id = 'org.gnome.settings-daemon.plugins.color'
             schema = source.lookup(schema_id, True) if source else None
             if schema is None:
                 return
-            settings = Gio.Settings.new(schema_id)
+            self.settings = Gio.Settings.new(schema_id)
+            settings = self.settings
 
             def apply_gnome(temp):
                 settings.set_boolean('night-light-enabled', True)
                 settings.set_uint('night-light-temperature', temp)
-                settings.set_boolean('night-light-schedule-automatic', False)
-                settings.set_double('night-light-schedule-from', 0.0)
-                settings.set_double('night-light-schedule-to', 24.0)
                 settings.apply()
 
             def reset_gnome():
@@ -83,9 +104,115 @@ class ColorBackend:
         except Exception as exc:
             print("Failed to initialise GNOME backend: {}".format(exc))
 
-    def init_kde_backend(self):
-        if Gio is None or GLib is None:
+    # GNOME bidirectional sync
+    def sync_init(self, app):
+        if self.settings is None:
             return
+        self.sync_app = app
+
+        self.pull_all()
+
+        for key in ('night-light-enabled', 'night-light-temperature',
+                    'night-light-schedule-from', 'night-light-schedule-to'):
+            hid = self.settings.connect('changed::' + key, self.on_gnome_changed)
+            self.sync_handler_ids.append(hid)
+
+        print("GNOME sync: active.")
+
+    def clear_syncing(self):
+        """Reset sync guard flag"""
+        self.syncing = False
+        return False  # GLib.SOURCE_REMOVE
+
+    def on_gnome_changed(self, settings, key):
+        """GNOME → App: react to dconf changes."""
+        if self.syncing:
+            return
+        self.syncing = True
+        try:
+            app = self.sync_app
+            if key == 'night-light-enabled':
+                app.night_switch.set_state(settings.get_boolean(key))
+
+            elif key == 'night-light-temperature':
+                temp = max(1500, min(settings.get_uint(key), 5500))
+                if not app.etap:
+                    app.temp_adjusment.set_value(temp)
+
+            elif key in ('night-light-schedule-from', 'night-light-schedule-to'):
+                app.schedule_init = True
+                try:
+                    fh, fm = gnome_to_hm(settings.get_double('night-light-schedule-from'))
+                    th, tm = gnome_to_hm(settings.get_double('night-light-schedule-to'))
+                    app.start_hour_adj.set_value(fh)
+                    app.start_minute_adj.set_value(fm)
+                    app.end_hour_adj.set_value(th)
+                    app.end_minute_adj.set_value(tm)
+                finally:
+                    app.schedule_init = False
+                app.update_schedule_info()
+                app.save_schedule_config()
+                if app.UserSettings.config_schedule:
+                    app.start_schedule()
+        finally:
+            GLib.idle_add(self.clear_syncing)
+
+    def pull_all(self):
+        """One-time GNOME -> app sync on startup."""
+        s = self.settings
+        app = self.sync_app
+        self.syncing = True
+        app.schedule_init = True
+        try:
+            # temperature first — switch handler uses config_temp via apply()
+            temp = max(1500, min(s.get_uint('night-light-temperature'), 5500))
+            if not app.etap:
+                app.temp_adjusment.set_value(temp)
+
+            app.night_switch.set_state(s.get_boolean('night-light-enabled'))
+
+            h, m = gnome_to_hm(s.get_double('night-light-schedule-from'))
+            app.start_hour_adj.set_value(h)
+            app.start_minute_adj.set_value(m)
+
+            h, m = gnome_to_hm(s.get_double('night-light-schedule-to'))
+            app.end_hour_adj.set_value(h)
+            app.end_minute_adj.set_value(m)
+
+            app.update_schedule_info()
+        finally:
+            app.schedule_init = False
+            GLib.idle_add(self.clear_syncing)
+
+        app.save_schedule_config()
+        if app.UserSettings.config_schedule:
+            app.start_schedule()
+
+    def sync_schedule(self, start_h, start_m, end_h, end_m):
+        """App -> GNOME: schedule times changed."""
+        if self.settings is None or self.syncing:
+            return
+        self.syncing = True
+        try:
+            self.settings.set_boolean('night-light-schedule-automatic', False)
+            self.settings.set_double('night-light-schedule-from',
+                                     hm_to_gnome(start_h, start_m))
+            self.settings.set_double('night-light-schedule-to',
+                                     hm_to_gnome(end_h, end_m))
+            self.settings.apply()
+        finally:
+            GLib.idle_add(self.clear_syncing)
+
+    def sync_disconnect(self):
+        if self.settings is None:
+            return
+        for hid in self.sync_handler_ids:
+            self.settings.disconnect(hid)
+        self.sync_handler_ids.clear()
+        self.sync_app = None
+
+    # KDE
+    def init_kde_backend(self):
         try:
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             proxy = Gio.DBusProxy.new_sync(
@@ -136,6 +263,7 @@ class ColorBackend:
         except Exception as exc:
             print("Failed to initialise KDE backend: {}".format(exc))
 
+    # Gammastep
     def init_gammastep_backend(self):
         if shutil.which('gammastep'):
             self.apply_func = self.apply_gammastep
@@ -159,6 +287,7 @@ class ColorBackend:
         except Exception as exc:
             print("gammastep reset error: {}".format(exc))
 
+    # Redshift (fallback)
     def apply_redshift(self, temp):
         try:
             subprocess.run(['redshift', '-P', '-O', str(temp)])
