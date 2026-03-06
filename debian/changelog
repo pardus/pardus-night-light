@@ -1,3 +1,15 @@
+pardus-night-light (0.5.0) unstable; urgency=medium
+
+  [ Emel Öztürk ]
+  * Add color backend for Wayland and multi desktop support - # PARDUS-1440
+  * Edit Readme -  # PARDUS-1440
+  * Update pkg for color backend support - # PARDUS-1440
+  * Edit README - #PARDUS-1458
+  * Add bidirectional Gnome night light sync - #PARDUS-1458
+  * Remove unnecessary gio guards - #PARDUS-1458
+
+ -- Fatih Altun <fatih.altun@pardus.org.tr>  Fri, 06 Mar 2026 14:37:21 +0300
+
 pardus-night-light (0.4.0) unstable; urgency=medium
 
   [ Hugo Carvalho ]
