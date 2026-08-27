@@ -136,7 +136,7 @@ class ColorBackend:
 
             elif key == 'night-light-temperature':
                 temp = max(1500, min(settings.get_uint(key), 5500))
-                if not app.etap:
+                if app.UserSettings.config_scrollbar:
                     app.temp_adjusment.set_value(temp)
 
             elif key in ('night-light-schedule-from', 'night-light-schedule-to'):
@@ -166,7 +166,7 @@ class ColorBackend:
         try:
             # temperature first — switch handler uses config_temp via apply()
             temp = max(1500, min(s.get_uint('night-light-temperature'), 5500))
-            if not app.etap:
+            if app.UserSettings.config_scrollbar:
                 app.temp_adjusment.set_value(temp)
 
             app.night_switch.set_state(s.get_boolean('night-light-enabled'))

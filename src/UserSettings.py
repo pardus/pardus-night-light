@@ -20,6 +20,8 @@ class UserSettings(object):
     def __init__(self):
         self.default_status = False
         self.default_temp = 5500
+        self.default_scrollbar = True
+        self.default_trayicon = True
         self.default_autostart = False
         self.default_schedule = False
         self.default_schedule_start = "18:00"
@@ -35,6 +37,8 @@ class UserSettings(object):
 
         self.config_status = self.default_status
         self.config_temp = self.default_temp
+        self.config_scrollbar = self.default_scrollbar
+        self.config_trayicon = self.default_trayicon
         self.config_autostart = self.default_autostart
         self.config_schedule = self.default_schedule
         self.config_schedule_start = self.default_schedule_start
@@ -43,6 +47,8 @@ class UserSettings(object):
     def createDefaultConfig(self, force=False):
         self.config['Main'] = {"status": self.default_status,
                                "temp": self.default_temp,
+                               "scrollbar": self.default_scrollbar,
+                               "trayicon": self.default_trayicon,
                                "autostart": self.default_autostart,
                                "schedule": self.default_schedule,
                                "schedule_start": self.default_schedule_start,
@@ -58,6 +64,8 @@ class UserSettings(object):
             self.config.read(self.configdir + self.configfile)
             self.config_status = self.config.getboolean('Main', 'status')
             self.config_temp = self.config.getint('Main', 'temp')
+            self.config_scrollbar = self.config.getboolean('Main', 'scrollbar')
+            self.config_trayicon = self.config.getboolean('Main', 'trayicon')
             self.config_autostart = self.config.getboolean('Main', 'autostart')
             self.config_schedule = self.config.getboolean('Main', 'schedule',
                                                           fallback=self.default_schedule)
@@ -72,6 +80,8 @@ class UserSettings(object):
             # if not read; try to create defaults
             self.config_status = self.default_status
             self.config_temp = self.default_temp
+            self.config_scrollbar = self.default_scrollbar
+            self.config_trayicon = self.config_trayicon
             self.config_autostart = self.default_autostart
             self.config_schedule = self.default_schedule
             self.config_schedule_start = self.default_schedule_start
@@ -81,11 +91,13 @@ class UserSettings(object):
             except Exception as e:
                 print("self.createDefaultConfig(force=True) : {}".format(e))
 
-    def writeConfig(self, status, temp, autostart,
+    def writeConfig(self, status, temp, scrollbar, trayicon, autostart,
                     schedule=None, schedule_start=None, schedule_end=None):
         self.config['Main'] = {
             "status": status,
             "temp": temp,
+            "scrollbar": scrollbar,
+            "trayicon": trayicon,
             "autostart": autostart,
             "schedule": schedule if schedule is not None else self.config_schedule,
             "schedule_start": schedule_start if schedule_start is not None else self.config_schedule_start,

@@ -132,10 +132,6 @@ class MainWindow(object):
         self.icon_passive = "pardus-night-light-off-symbolic" if system_wide else "display-brightness-symbolic"
         self.make_first_sleep = True
         self.temp_color = {"low": 5500, "medium": 4000, "high": 2500}
-        self.etap = False
-        if "etap" in distro.name().lower() and "etap" in distro.codename():
-            print("ETAP detected.")
-            self.etap = True
 
         self.schedule_timer_id = None
         self.schedule_init = False
@@ -171,7 +167,7 @@ class MainWindow(object):
                 print("{}".format(e))
                 print("invalid arg")
                 return
-            if self.etap:
+            if not self.UserSettings.config_scrollbar:
                 self.set_color_temp(value)
             else:
                 self.temp_adjusment.set_value(value)
@@ -187,18 +183,18 @@ class MainWindow(object):
 
     def init_ui(self):
 
-        if self.etap:
+        if not self.UserSettings.config_scrollbar:
             self.ui_tempcolor_stack.set_visible_child_name("button")
             self.ui_main_box.set_spacing(0)
             self.ui_mainlabels_box.set_spacing(0)
             self.ui_mainwidgets_box.set_spacing(0)
             self.ui_submain_box.set_margin_top(0)
-            self.init_etap_tempcolor_buttons()
+            self.init_nonscrollbar_tempcolor_buttons()
         else:
             self.ui_tempcolor_stack.set_visible_child_name("scale")
 
         self.night_switch.set_state(self.UserSettings.config_status)
-        if self.etap:
+        if not self.UserSettings.config_scrollbar:
             self.ui_temp_box.set_sensitive(self.UserSettings.config_status)
         else:
             self.temp_scale.set_sensitive(self.UserSettings.config_status)
@@ -218,7 +214,7 @@ class MainWindow(object):
         # GNOME bidirectional sync (no-op if not GNOME)
         self.backend.sync_init(self)
 
-    def init_etap_tempcolor_buttons(self):
+    def init_nonscrollbar_tempcolor_buttons(self):
         self.low_button = Gtk.Button.new()
         self.low_button.name = "low"
         self.low_button.connect("clicked", self.on_temp_button_clicked)
@@ -277,7 +273,7 @@ class MainWindow(object):
         self.ui_temp_box.show_all()
 
     def init_indicator(self):
-        if self.etap:
+        if not self.UserSettings.config_trayicon:
             return
         self.indicator = appindicator.Indicator.new(
             "pardus-night-light", self.icon_active, appindicator.IndicatorCategory.APPLICATION_STATUS)
@@ -300,7 +296,7 @@ class MainWindow(object):
         self.indicator.set_menu(self.menu)
 
     def set_indicator(self):
-        if self.etap:
+        if not self.UserSettings.config_trayicon:
             return
 
         if self.UserSettings.config_status:
@@ -371,7 +367,7 @@ class MainWindow(object):
             int(self.end_minute_adj.get_value()))
         self.UserSettings.writeConfig(
             self.UserSettings.config_status, self.UserSettings.config_temp,
-            self.UserSettings.config_autostart,
+            self.UserSettings.config_scrollbar, self.UserSettings.config_trayicon, self.UserSettings.config_autostart,
             schedule=schedule if schedule is not None else self.UserSettings.config_schedule,
             schedule_start=start_str, schedule_end=end_str)
         self.user_settings()
@@ -491,7 +487,7 @@ class MainWindow(object):
             self.about_dialog.hide()
         self.main_window.get_application().quit()
 
-    # Set color temp function for ETAP
+    # Set color temp function for non scrollbar buttons
     def set_color_temp(self, temperature):
         if self.UserSettings.config_status:
             self.backend.apply(temperature)
@@ -516,10 +512,11 @@ class MainWindow(object):
         user_temp = self.UserSettings.config_temp
         if temperature != user_temp:
             self.UserSettings.writeConfig(self.UserSettings.config_status, temperature,
+                                          self.UserSettings.config_scrollbar, self.UserSettings.config_trayicon,
                                           self.UserSettings.config_autostart)
             self.user_settings()
 
-    # Color temperature button clicks for ETAP
+    # Color temperature button clicks for non scrollbar buttons
     def on_temp_button_clicked(self, button):
         if self.UserSettings.config_status:
             self.backend.apply(self.temp_color[button.name])
@@ -531,6 +528,7 @@ class MainWindow(object):
         user_temp = self.UserSettings.config_temp
         if self.temp_color[button.name] != user_temp:
             self.UserSettings.writeConfig(self.UserSettings.config_status, self.temp_color[button.name],
+                                          self.UserSettings.config_scrollbar, self.UserSettings.config_trayicon,
                                           self.UserSettings.config_autostart)
             self.user_settings()
 
@@ -543,11 +541,12 @@ class MainWindow(object):
 
         user_temp = self.UserSettings.config_temp
         if value != user_temp:
-            self.UserSettings.writeConfig(self.UserSettings.config_status, value, self.UserSettings.config_autostart)
+            self.UserSettings.writeConfig(self.UserSettings.config_status, value, self.UserSettings.config_scrollbar,
+                                          self.UserSettings.config_trayicon, self.UserSettings.config_autostart)
             self.user_settings()
 
     def on_ui_night_switch_state_set(self, switch, state):
-        if self.etap:
+        if not self.UserSettings.config_scrollbar:
             self.ui_temp_box.set_sensitive(state)
         else:
             self.temp_scale.set_sensitive(state)
@@ -556,7 +555,7 @@ class MainWindow(object):
                 self.make_first_sleep = False
                 time.sleep(5)
             self.backend.apply(self.UserSettings.config_temp)
-            if self.etap:
+            if not self.UserSettings.config_scrollbar:
                 if self.UserSettings.config_temp == self.temp_color["low"]:
                     self.low_button.get_style_context().add_class("suggested-action")
                     self.medium_button.get_style_context().remove_class("suggested-action")
@@ -575,18 +574,19 @@ class MainWindow(object):
                     self.high_button.get_style_context().remove_class("suggested-action")
             else:
                 self.temp_adjusment.set_value(self.UserSettings.config_temp)
-            if not self.etap:
+            if self.UserSettings.config_trayicon:
                 self.item_action.set_label(_("Disable"))
                 self.indicator.set_icon(self.icon_active)
         else:
             self.backend.reset()
-            if not self.etap:
+            if self.UserSettings.config_trayicon:
                 self.item_action.set_label(_("Enable"))
                 self.indicator.set_icon(self.icon_passive)
 
         user_status = self.UserSettings.config_status
         if state != user_status:
-            self.UserSettings.writeConfig(state, self.UserSettings.config_temp, self.UserSettings.config_autostart)
+            self.UserSettings.writeConfig(state, self.UserSettings.config_temp, self.UserSettings.config_scrollbar,
+                                          self.UserSettings.config_trayicon, self.UserSettings.config_autostart)
             self.user_settings()
 
     def on_ui_autostart_switch_state_set(self, switch, state):
@@ -594,7 +594,8 @@ class MainWindow(object):
 
         user_autostart = self.UserSettings.config_autostart
         if state != user_autostart:
-            self.UserSettings.writeConfig(self.UserSettings.config_status, self.UserSettings.config_temp, state)
+            self.UserSettings.writeConfig(self.UserSettings.config_status, self.UserSettings.config_temp,
+                                          self.UserSettings.config_scrollbar, self.UserSettings.config_trayicon, state)
             self.user_settings()
 
     def on_ui_about_button_clicked(self, button):
@@ -603,7 +604,7 @@ class MainWindow(object):
 
     def on_ui_main_window_delete_event(self, widget, event):
         self.main_window.hide()
-        if not self.etap:
+        if self.UserSettings.config_trayicon:
             self.item_sh_app.set_label(_("Show App"))
         return True
 
