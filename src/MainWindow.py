@@ -211,7 +211,7 @@ class MainWindow(object):
 
         self.init_schedule_ui()
 
-        # GNOME bidirectional sync (no-op if not GNOME)
+        # Gsettings bidirectional sync (no-op if not GNOME/Cinnamon)
         self.backend.sync_init(self)
 
     def init_nonscrollbar_tempcolor_buttons(self):
@@ -337,6 +337,9 @@ class MainWindow(object):
         self.save_schedule_config(schedule=state)
 
         if state:
+            # GNOME/Cinnamon only schedule while night light is enabled.
+            if self.backend.has_native_schedule() and not self.UserSettings.config_status:
+                self.night_switch.set_state(True)
             self.start_schedule()
         else:
             self.cancel_schedule_timer()
@@ -442,6 +445,10 @@ class MainWindow(object):
     def start_schedule(self):
         """Apply correct state for now, then set one-shot timer for next transition."""
         self.cancel_schedule_timer()
+
+        # GNOME/Cinnamon handle schedule transitions natively, so no app timer.
+        if self.backend.has_native_schedule():
+            return
 
         # Apply immediately
         should_be_on = self.is_in_schedule_range()
