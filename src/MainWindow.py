@@ -340,6 +340,12 @@ class MainWindow(object):
             # GNOME/Cinnamon only schedule while night light is enabled.
             if self.backend.has_native_schedule() and not self.UserSettings.config_status:
                 self.night_switch.set_state(True)
+
+            self.backend.sync_schedule(
+                int(self.start_hour_adj.get_value()),
+                int(self.start_minute_adj.get_value()),
+                int(self.end_hour_adj.get_value()),
+                int(self.end_minute_adj.get_value()))
             self.start_schedule()
         else:
             self.cancel_schedule_timer()

@@ -205,10 +205,14 @@ class ColorBackend:
             return
         self.syncing = True
         try:
-            # Cinnamon's schema has no 'night-light-schedule-automatic' key
+            # Switch the desktop to manual schedule
             schema = self.settings.props.settings_schema
             if schema.has_key('night-light-schedule-automatic'):
+                # Gnome : boolean (True = sunset/sunrise)
                 self.settings.set_boolean('night-light-schedule-automatic', False)
+            if schema.has_key('night-light-schedule-mode'):
+                # Cinnamon : enum 0=auto, 1=manual, 2=always
+                self.settings.set_enum('night-light-schedule-mode', 1)
             self.settings.set_double('night-light-schedule-from',
                                      hm_to_gnome(start_h, start_m))
             self.settings.set_double('night-light-schedule-to',
