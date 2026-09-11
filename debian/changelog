@@ -1,3 +1,14 @@
+pardus-night-light (0.5.2) unstable; urgency=medium
+
+  * Add cinnamon support - Generalize gnome backend to work with cinnamon's color schema - Handles trnasitions natively - #PARDUS-1793
+  * Fix schema bug for cinnamon - #PARDUS-1793
+  * Make cinnamon schedule time sync bidirectional - #PARDUS-1793
+  * Fix cinnamon's schedule bug for pardus-night-light - #PARDUS-1793
+  * Fix schedule staying active - #PARDUS-1793
+  * Sync cinnamon schedule mode with app timer - #PARDUS-1793
+
+ -- Emel Öztürk <emel.ozturk@pardus.org.tr>  Fri, 11 Sep 2026 17:15:29 +0300
+
 pardus-night-light (0.5.1) unstable; urgency=medium
 
   * Add scroll and tray icon confs
