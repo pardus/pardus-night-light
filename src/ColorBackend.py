@@ -144,6 +144,8 @@ class ColorBackend:
                     app.temp_adjusment.set_value(temp)
 
             elif key in ('night-light-schedule-from', 'night-light-schedule-to'):
+                if not app.UserSettings.config_schedule:
+                    return
                 app.schedule_init = True
                 try:
                     fh, fm = gnome_to_hm(settings.get_double('night-light-schedule-from'))
@@ -175,13 +177,14 @@ class ColorBackend:
 
             app.night_switch.set_state(s.get_boolean('night-light-enabled'))
 
-            h, m = gnome_to_hm(s.get_double('night-light-schedule-from'))
-            app.start_hour_adj.set_value(h)
-            app.start_minute_adj.set_value(m)
+            if app.UserSettings.config_schedule:
+                h, m = gnome_to_hm(s.get_double('night-light-schedule-from'))
+                app.start_hour_adj.set_value(h)
+                app.start_minute_adj.set_value(m)
 
-            h, m = gnome_to_hm(s.get_double('night-light-schedule-to'))
-            app.end_hour_adj.set_value(h)
-            app.end_minute_adj.set_value(m)
+                h, m = gnome_to_hm(s.get_double('night-light-schedule-to'))
+                app.end_hour_adj.set_value(h)
+                app.end_minute_adj.set_value(m)
 
             app.update_schedule_info()
         finally:
@@ -190,8 +193,13 @@ class ColorBackend:
 
         app.save_schedule_config()
         if app.UserSettings.config_schedule:
+            self.sync_schedule(
+                int(app.start_hour_adj.get_value()),
+                int(app.start_minute_adj.get_value()),
+                int(app.end_hour_adj.get_value()),
+                int(app.end_minute_adj.get_value()))
             app.start_schedule()
-        else:
+        elif app.UserSettings.config_status:
             self.sync_always()
 
     def has_native_schedule(self):
@@ -225,16 +233,25 @@ class ColorBackend:
 
     def sync_always(self):
         """
-        Use Cinnamon's always-on schedule mode
+        Disable time restrictions in the native schedule.
         """
         if self.settings is None:
             return
         schema = self.settings.props.settings_schema
-        if not schema.has_key('night-light-schedule-mode'):
+        has_mode = schema.has_key('night-light-schedule-mode')
+        has_automatic = schema.has_key('night-light-schedule-automatic')
+        if not has_mode and not has_automatic:
             return
         self.syncing = True
         try:
-            self.settings.set_enum('night-light-schedule-mode', 2)
+            if has_mode:
+                # Cinnamon: dedicated always mode
+                self.settings.set_enum('night-light-schedule-mode', 2)
+            else:
+                # GNOME: manual full-day schedule
+                self.settings.set_boolean('night-light-schedule-automatic', False)
+                self.settings.set_double('night-light-schedule-from', 0.0)
+                self.settings.set_double('night-light-schedule-to', 24.0)
             self.settings.apply()
         finally:
             GLib.idle_add(self.clear_syncing)

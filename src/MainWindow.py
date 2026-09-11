@@ -134,7 +134,7 @@ class MainWindow(object):
         self.temp_color = {"low": 5500, "medium": 4000, "high": 2500}
 
         self.schedule_timer_id = None
-        self.schedule_init = False
+        self.schedule_init = True
 
         self.backend = ColorBackend()
 
@@ -349,7 +349,8 @@ class MainWindow(object):
             self.start_schedule()
         else:
             self.cancel_schedule_timer()
-            self.backend.sync_always()
+            if self.UserSettings.config_status:
+                self.backend.sync_always()
 
     def on_schedule_time_changed(self, spin):
         self.update_schedule_info()
@@ -568,6 +569,15 @@ class MainWindow(object):
             if "tray" in self.Application.args.keys() and self.make_first_sleep:
                 self.make_first_sleep = False
                 time.sleep(5)
+            if not self.schedule_init:
+                if self.UserSettings.config_schedule:
+                    self.backend.sync_schedule(
+                        int(self.start_hour_adj.get_value()),
+                        int(self.start_minute_adj.get_value()),
+                        int(self.end_hour_adj.get_value()),
+                        int(self.end_minute_adj.get_value()))
+                else:
+                    self.backend.sync_always()
             self.backend.apply(self.UserSettings.config_temp)
             if not self.UserSettings.config_scrollbar:
                 if self.UserSettings.config_temp == self.temp_color["low"]:
