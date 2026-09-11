@@ -349,6 +349,7 @@ class MainWindow(object):
             self.start_schedule()
         else:
             self.cancel_schedule_timer()
+            self.backend.sync_always()
 
     def on_schedule_time_changed(self, spin):
         self.update_schedule_info()

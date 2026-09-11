@@ -191,6 +191,8 @@ class ColorBackend:
         app.save_schedule_config()
         if app.UserSettings.config_schedule:
             app.start_schedule()
+        else:
+            self.sync_always()
 
     def has_native_schedule(self):
         """
@@ -217,6 +219,22 @@ class ColorBackend:
                                      hm_to_gnome(start_h, start_m))
             self.settings.set_double('night-light-schedule-to',
                                      hm_to_gnome(end_h, end_m))
+            self.settings.apply()
+        finally:
+            GLib.idle_add(self.clear_syncing)
+
+    def sync_always(self):
+        """
+        Use Cinnamon's always-on schedule mode
+        """
+        if self.settings is None:
+            return
+        schema = self.settings.props.settings_schema
+        if not schema.has_key('night-light-schedule-mode'):
+            return
+        self.syncing = True
+        try:
+            self.settings.set_enum('night-light-schedule-mode', 2)
             self.settings.apply()
         finally:
             GLib.idle_add(self.clear_syncing)
