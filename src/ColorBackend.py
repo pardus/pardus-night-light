@@ -116,8 +116,11 @@ class ColorBackend:
 
         self.pull_all()
 
-        for key in ('night-light-enabled', 'night-light-temperature',
-                    'night-light-schedule-from', 'night-light-schedule-to'):
+        keys = ('night-light-enabled', 'night-light-temperature',
+                'night-light-schedule-from', 'night-light-schedule-to')
+        if self.backend_name == 'cinnamon':
+            keys += ('night-light-schedule-mode',)
+        for key in keys:
             hid = self.settings.connect('changed::' + key, self.on_gsettings_changed)
             self.sync_handler_ids.append(hid)
 
@@ -160,6 +163,16 @@ class ColorBackend:
                 app.save_schedule_config()
                 if app.UserSettings.config_schedule:
                     app.start_schedule()
+
+            elif key == 'night-light-schedule-mode':
+                schedule = settings.get_enum(key) == 1  # manual
+                app.schedule_init = True
+                try:
+                    app.schedule_switch.set_state(schedule)
+                    app.schedule_box.set_sensitive(schedule)
+                finally:
+                    app.schedule_init = False
+                app.save_schedule_config(schedule=schedule)
         finally:
             GLib.idle_add(self.clear_syncing)
 
@@ -169,6 +182,7 @@ class ColorBackend:
         app = self.sync_app
         self.syncing = True
         app.schedule_init = True
+        schedule = app.UserSettings.config_schedule
         try:
             # temperature first — switch handler uses config_temp via apply()
             temp = max(1500, min(s.get_uint('night-light-temperature'), 5500))
@@ -177,7 +191,12 @@ class ColorBackend:
 
             app.night_switch.set_state(s.get_boolean('night-light-enabled'))
 
-            if app.UserSettings.config_schedule:
+            if self.backend_name == 'cinnamon':
+                schedule = s.get_enum('night-light-schedule-mode') == 1
+                app.schedule_switch.set_state(schedule)
+                app.schedule_box.set_sensitive(schedule)
+
+            if schedule:
                 h, m = gnome_to_hm(s.get_double('night-light-schedule-from'))
                 app.start_hour_adj.set_value(h)
                 app.start_minute_adj.set_value(m)
@@ -191,7 +210,7 @@ class ColorBackend:
             app.schedule_init = False
             GLib.idle_add(self.clear_syncing)
 
-        app.save_schedule_config()
+        app.save_schedule_config(schedule=schedule)
         if app.UserSettings.config_schedule:
             self.sync_schedule(
                 int(app.start_hour_adj.get_value()),
@@ -199,7 +218,7 @@ class ColorBackend:
                 int(app.end_hour_adj.get_value()),
                 int(app.end_minute_adj.get_value()))
             app.start_schedule()
-        elif app.UserSettings.config_status:
+        elif app.UserSettings.config_status and self.backend_name != 'cinnamon':
             self.sync_always()
 
     def has_native_schedule(self):
