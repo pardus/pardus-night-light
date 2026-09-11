@@ -4,14 +4,14 @@
 Cross-desktop night light backend.
 
 Automatically selects:
-GNOME (GSettings), KDE (D-Bus), Wayland (gammastep), or redshift as fallback.
+GNOME/Cinnamon (GSettings), KDE (D-Bus), Wayland (gammastep), or redshift as fallback.
 
 Public API:
 - apply(kelvin)
 - reset()
-- sync_init(app)                    [GNOME only — bidirectional GSettings sync]
-- sync_schedule(sh, sm, eh, em)     [GNOME only]
-- sync_disconnect()                 [GNOME only — cleanup]
+- sync_init(app)                    [GNOME/Cinnamon only — bidirectional GSettings sync]
+- sync_schedule(sh, sm, eh, em)     [GNOME/Cinnamon only]
+- sync_disconnect()                 [GNOME/Cinnamon only — cleanup]
 """
 
 import os
@@ -24,10 +24,10 @@ gi.require_version('GLib', '2.0')
 from gi.repository import Gio, GLib
 
 
-# GNOME hour conversion helpers
+# GNOME/Cinnamon hour conversion helpers
 def gnome_to_hm(fractional_hour):
     """
-    GNOME stores schedule as fractional double (20.5 = 20:30)
+    GNOME and Cinnamon store schedule as fractional double (20.5 = 20:30)
     App stores as integer hour + integer minute
     """
     fractional_hour = max(0.0, min(fractional_hour, 24.0))
@@ -49,7 +49,7 @@ class ColorBackend:
     """
     Automatically choose a color temperature backend
 
-    1. GNOME GSettings  --  GNOME / Unity / Budgie
+    1. GSettings        --  GNOME / Unity / Budgie / Cinnamon
     2. KDE D-Bus        --  KDE / Plasma
     3. gammastep        --  Wayland and neither above matched
     4. redshift         --  fallback (X11 or when nothing else is available)
@@ -60,7 +60,7 @@ class ColorBackend:
         self.reset_func = self.reset_redshift
         self.backend_name = "redshift"
 
-        # GNOME sync state
+        # GSettings sync state (GNOME/Cinnamon)
         self.settings = None
         self.sync_handler_ids = []
         self.syncing = False
@@ -69,7 +69,11 @@ class ColorBackend:
         session = os.environ.get('XDG_SESSION_TYPE', '').lower()
 
         if any(d in desktop for d in ('gnome', 'unity', 'budgie')):
-            self.init_gnome_backend()
+            self.init_gsettings_backend(
+                'org.gnome.settings-daemon.plugins.color', 'gnome')
+        elif 'cinnamon' in desktop:
+            self.init_gsettings_backend(
+                'org.cinnamon.settings-daemon.plugins.color', 'cinnamon')
         elif any(d in desktop for d in ('kde', 'plasma')):
             self.init_kde_backend()
         elif session == 'wayland':
@@ -78,33 +82,33 @@ class ColorBackend:
         print("Selected backend: {} (session={}, desktop={})".format(
             self.backend_name, session or "unknown", desktop or "unknown"))
 
-    # GNOME
-    def init_gnome_backend(self):
+    # GSettings (GNOME/Cinnamon)
+    def init_gsettings_backend(self, schema_id, name):
         try:
             source = Gio.SettingsSchemaSource.get_default()
-            schema_id = 'org.gnome.settings-daemon.plugins.color'
             schema = source.lookup(schema_id, True) if source else None
             if schema is None:
+                print("Schema {} not found, falling back.".format(schema_id))
                 return
             self.settings = Gio.Settings.new(schema_id)
             settings = self.settings
 
-            def apply_gnome(temp):
+            def apply_gsettings(temp):
                 settings.set_boolean('night-light-enabled', True)
                 settings.set_uint('night-light-temperature', temp)
                 settings.apply()
 
-            def reset_gnome():
+            def reset_gsettings():
                 settings.set_boolean('night-light-enabled', False)
                 settings.apply()
 
-            self.apply_func = apply_gnome
-            self.reset_func = reset_gnome
-            self.backend_name = "gnome"
+            self.apply_func = apply_gsettings
+            self.reset_func = reset_gsettings
+            self.backend_name = name
         except Exception as exc:
-            print("Failed to initialise GNOME backend: {}".format(exc))
+            print("Failed to initialise {} backend: {}".format(name, exc))
 
-    # GNOME bidirectional sync
+    # GSettings bidirectional sync (GNOME/Cinnamon)
     def sync_init(self, app):
         if self.settings is None:
             return
@@ -112,20 +116,23 @@ class ColorBackend:
 
         self.pull_all()
 
-        for key in ('night-light-enabled', 'night-light-temperature',
-                    'night-light-schedule-from', 'night-light-schedule-to'):
-            hid = self.settings.connect('changed::' + key, self.on_gnome_changed)
+        keys = ('night-light-enabled', 'night-light-temperature',
+                'night-light-schedule-from', 'night-light-schedule-to')
+        if self.backend_name == 'cinnamon':
+            keys += ('night-light-schedule-mode',)
+        for key in keys:
+            hid = self.settings.connect('changed::' + key, self.on_gsettings_changed)
             self.sync_handler_ids.append(hid)
 
-        print("GNOME sync: active.")
+        print("{} sync: active.".format(self.backend_name))
 
     def clear_syncing(self):
         """Reset sync guard flag"""
         self.syncing = False
         return False  # GLib.SOURCE_REMOVE
 
-    def on_gnome_changed(self, settings, key):
-        """GNOME → App: react to dconf changes."""
+    def on_gsettings_changed(self, settings, key):
+        """Desktop (GNOME/Cinnamon) -> App: react to dconf changes."""
         if self.syncing:
             return
         self.syncing = True
@@ -140,6 +147,8 @@ class ColorBackend:
                     app.temp_adjusment.set_value(temp)
 
             elif key in ('night-light-schedule-from', 'night-light-schedule-to'):
+                if not app.UserSettings.config_schedule:
+                    return
                 app.schedule_init = True
                 try:
                     fh, fm = gnome_to_hm(settings.get_double('night-light-schedule-from'))
@@ -154,15 +163,26 @@ class ColorBackend:
                 app.save_schedule_config()
                 if app.UserSettings.config_schedule:
                     app.start_schedule()
+
+            elif key == 'night-light-schedule-mode':
+                schedule = settings.get_enum(key) == 1  # manual
+                app.schedule_init = True
+                try:
+                    app.schedule_switch.set_state(schedule)
+                    app.schedule_box.set_sensitive(schedule)
+                finally:
+                    app.schedule_init = False
+                app.save_schedule_config(schedule=schedule)
         finally:
             GLib.idle_add(self.clear_syncing)
 
     def pull_all(self):
-        """One-time GNOME -> app sync on startup."""
+        """One-time desktop (GNOME/Cinnamon) -> app sync on startup."""
         s = self.settings
         app = self.sync_app
         self.syncing = True
         app.schedule_init = True
+        schedule = app.UserSettings.config_schedule
         try:
             # temperature first — switch handler uses config_temp via apply()
             temp = max(1500, min(s.get_uint('night-light-temperature'), 5500))
@@ -171,34 +191,86 @@ class ColorBackend:
 
             app.night_switch.set_state(s.get_boolean('night-light-enabled'))
 
-            h, m = gnome_to_hm(s.get_double('night-light-schedule-from'))
-            app.start_hour_adj.set_value(h)
-            app.start_minute_adj.set_value(m)
+            if self.backend_name == 'cinnamon':
+                schedule = s.get_enum('night-light-schedule-mode') == 1
+                app.schedule_switch.set_state(schedule)
+                app.schedule_box.set_sensitive(schedule)
 
-            h, m = gnome_to_hm(s.get_double('night-light-schedule-to'))
-            app.end_hour_adj.set_value(h)
-            app.end_minute_adj.set_value(m)
+            if schedule:
+                h, m = gnome_to_hm(s.get_double('night-light-schedule-from'))
+                app.start_hour_adj.set_value(h)
+                app.start_minute_adj.set_value(m)
+
+                h, m = gnome_to_hm(s.get_double('night-light-schedule-to'))
+                app.end_hour_adj.set_value(h)
+                app.end_minute_adj.set_value(m)
 
             app.update_schedule_info()
         finally:
             app.schedule_init = False
             GLib.idle_add(self.clear_syncing)
 
-        app.save_schedule_config()
+        app.save_schedule_config(schedule=schedule)
         if app.UserSettings.config_schedule:
+            self.sync_schedule(
+                int(app.start_hour_adj.get_value()),
+                int(app.start_minute_adj.get_value()),
+                int(app.end_hour_adj.get_value()),
+                int(app.end_minute_adj.get_value()))
             app.start_schedule()
+        elif app.UserSettings.config_status and self.backend_name != 'cinnamon':
+            self.sync_always()
+
+    def has_native_schedule(self):
+        """
+        True when the desktop (GNOME/Cinnamon) handles
+        schedule transitions itself
+        """
+        return self.settings is not None
 
     def sync_schedule(self, start_h, start_m, end_h, end_m):
-        """App -> GNOME: schedule times changed."""
-        if self.settings is None or self.syncing:
+        """App -> desktop GNOME/Cinnamon"""
+        if self.settings is None:
             return
         self.syncing = True
         try:
-            self.settings.set_boolean('night-light-schedule-automatic', False)
+            # Switch the desktop to manual schedule
+            schema = self.settings.props.settings_schema
+            if schema.has_key('night-light-schedule-automatic'):
+                # Gnome : boolean (True = sunset/sunrise)
+                self.settings.set_boolean('night-light-schedule-automatic', False)
+            if schema.has_key('night-light-schedule-mode'):
+                # Cinnamon : enum 0=auto, 1=manual, 2=always
+                self.settings.set_enum('night-light-schedule-mode', 1)
             self.settings.set_double('night-light-schedule-from',
                                      hm_to_gnome(start_h, start_m))
             self.settings.set_double('night-light-schedule-to',
                                      hm_to_gnome(end_h, end_m))
+            self.settings.apply()
+        finally:
+            GLib.idle_add(self.clear_syncing)
+
+    def sync_always(self):
+        """
+        Disable time restrictions in the native schedule.
+        """
+        if self.settings is None:
+            return
+        schema = self.settings.props.settings_schema
+        has_mode = schema.has_key('night-light-schedule-mode')
+        has_automatic = schema.has_key('night-light-schedule-automatic')
+        if not has_mode and not has_automatic:
+            return
+        self.syncing = True
+        try:
+            if has_mode:
+                # Cinnamon: dedicated always mode
+                self.settings.set_enum('night-light-schedule-mode', 2)
+            else:
+                # GNOME: manual full-day schedule
+                self.settings.set_boolean('night-light-schedule-automatic', False)
+                self.settings.set_double('night-light-schedule-from', 0.0)
+                self.settings.set_double('night-light-schedule-to', 24.0)
             self.settings.apply()
         finally:
             GLib.idle_add(self.clear_syncing)

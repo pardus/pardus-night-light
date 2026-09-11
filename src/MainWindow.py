@@ -134,7 +134,7 @@ class MainWindow(object):
         self.temp_color = {"low": 5500, "medium": 4000, "high": 2500}
 
         self.schedule_timer_id = None
-        self.schedule_init = False
+        self.schedule_init = True
 
         self.backend = ColorBackend()
 
@@ -211,7 +211,7 @@ class MainWindow(object):
 
         self.init_schedule_ui()
 
-        # GNOME bidirectional sync (no-op if not GNOME)
+        # Gsettings bidirectional sync (no-op if not GNOME/Cinnamon)
         self.backend.sync_init(self)
 
     def init_nonscrollbar_tempcolor_buttons(self):
@@ -337,9 +337,20 @@ class MainWindow(object):
         self.save_schedule_config(schedule=state)
 
         if state:
+            # GNOME/Cinnamon only schedule while night light is enabled.
+            if self.backend.has_native_schedule() and not self.UserSettings.config_status:
+                self.night_switch.set_state(True)
+
+            self.backend.sync_schedule(
+                int(self.start_hour_adj.get_value()),
+                int(self.start_minute_adj.get_value()),
+                int(self.end_hour_adj.get_value()),
+                int(self.end_minute_adj.get_value()))
             self.start_schedule()
         else:
             self.cancel_schedule_timer()
+            if self.UserSettings.config_status:
+                self.backend.sync_always()
 
     def on_schedule_time_changed(self, spin):
         self.update_schedule_info()
@@ -442,6 +453,10 @@ class MainWindow(object):
     def start_schedule(self):
         """Apply correct state for now, then set one-shot timer for next transition."""
         self.cancel_schedule_timer()
+
+        # GNOME/Cinnamon handle schedule transitions natively, so no app timer.
+        if self.backend.has_native_schedule():
+            return
 
         # Apply immediately
         should_be_on = self.is_in_schedule_range()
@@ -554,6 +569,15 @@ class MainWindow(object):
             if "tray" in self.Application.args.keys() and self.make_first_sleep:
                 self.make_first_sleep = False
                 time.sleep(5)
+            if not self.schedule_init:
+                if self.UserSettings.config_schedule:
+                    self.backend.sync_schedule(
+                        int(self.start_hour_adj.get_value()),
+                        int(self.start_minute_adj.get_value()),
+                        int(self.end_hour_adj.get_value()),
+                        int(self.end_minute_adj.get_value()))
+                else:
+                    self.backend.sync_always()
             self.backend.apply(self.UserSettings.config_temp)
             if not self.UserSettings.config_scrollbar:
                 if self.UserSettings.config_temp == self.temp_color["low"]:
