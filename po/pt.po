@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-15 00:57+0300\n"
-"PO-Revision-Date: 2025-10-11 08:30+0100\n"
+"POT-Creation-Date: 2026-02-24 09:02+0300\n"
+"PO-Revision-Date: 2026-10-19 14:21+0100\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: \n"
 "Language: pt\n"
@@ -16,30 +16,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.10\n"
 
-#: ui/MainWindow.glade:51
+#: ui/MainWindow.glade:79
 msgid "Night Light"
-msgstr "Luz Noturna"
+msgstr "Luz noturna"
 
-#: ui/MainWindow.glade:64
+#: ui/MainWindow.glade:92
 msgid "Color Temperature"
 msgstr "Temperatura da cor"
 
-#: ui/MainWindow.glade:77
+#: ui/MainWindow.glade:105
 msgid "Launch at startup"
 msgstr "Iniciar no arranque"
 
-#: ui/MainWindow.glade:238 src/MainWindow.py:58 src/MainWindow.py:265
+#: ui/MainWindow.glade:118
+msgid "Schedule"
+msgstr "Agendar"
+
+#: ui/MainWindow.glade:425
+msgid "Night light turns on at 18:00, turns off at 06:00."
+msgstr "A luz noturna liga às 18:00 e desliga-se às 06:00."
+
+#: ui/MainWindow.glade:491 src/MainWindow.py:58 src/MainWindow.py:272
 msgid "Pardus Night Light"
 msgstr "Luz Noturna Pardus"
 
-#: ui/MainWindow.glade:267
+#: ui/MainWindow.glade:520
 msgid "Simple color temperature application based on Redshift."
 msgstr "Aplicação para ajustar a temperatura da cor baseada no Redshift."
 
 #. Name Surname <example@examplemail.com>
-#: ui/MainWindow.glade:270
+#: ui/MainWindow.glade:523
 msgid "translator-credits"
 msgstr "Hugo Carvalho <hugokarvalho@hotmail.com>"
 
@@ -47,37 +55,41 @@ msgstr "Hugo Carvalho <hugokarvalho@hotmail.com>"
 msgid "About Pardus Night Light"
 msgstr "Acerca do Luz Noturna Pardus"
 
-#: src/MainWindow.py:216
+#: src/MainWindow.py:221
 msgid "Low"
 msgstr "Baixa"
 
-#: src/MainWindow.py:233
+#: src/MainWindow.py:238
 msgid "Medium"
 msgstr "Média"
 
-#: src/MainWindow.py:250
+#: src/MainWindow.py:255
 msgid "High"
 msgstr "Alta"
 
-#: src/MainWindow.py:273
+#: src/MainWindow.py:280
 msgid "Quit"
 msgstr "Sair"
 
-#: src/MainWindow.py:285 src/MainWindow.py:402
+#: src/MainWindow.py:294 src/MainWindow.py:434
 msgid "Disable"
 msgstr "Desativar"
 
-#: src/MainWindow.py:288 src/MainWindow.py:406
+#: src/MainWindow.py:297 src/MainWindow.py:439
 msgid "Enable"
 msgstr "Ativar"
 
-#: src/MainWindow.py:292 src/MainWindow.py:309
+#: src/MainWindow.py:301 src/MainWindow.py:340
 msgid "Hide App"
 msgstr "Ocultar aplicação"
 
-#: src/MainWindow.py:294 src/MainWindow.py:306 src/MainWindow.py:428
+#: src/MainWindow.py:303 src/MainWindow.py:337 src/MainWindow.py:462
 msgid "Show App"
 msgstr "Mostrar aplicação"
+
+#: src/MainWindow.py:322
+msgid "Night light turns on at {}, turns off at {}."
+msgstr "A luz noturna liga às {}, e desliga-se às {}."
 
 #~ msgid "Based on Redshift"
 #~ msgstr "Baseada no Redshift"
