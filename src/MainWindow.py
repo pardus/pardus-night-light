@@ -8,7 +8,6 @@ Created on Sat Feb  5 19:05:13 2022
 
 import os
 import signal
-import time
 from datetime import datetime, timedelta
 import distro
 import gi
@@ -566,9 +565,7 @@ class MainWindow(object):
         else:
             self.temp_scale.set_sensitive(state)
         if state:
-            if "tray" in self.Application.args.keys() and self.make_first_sleep:
-                self.make_first_sleep = False
-                time.sleep(5)
+            wait_for_desktop = "tray" in self.Application.args.keys() and self.make_first_sleep
             if not self.schedule_init:
                 if self.UserSettings.config_schedule:
                     self.backend.sync_schedule(
@@ -578,7 +575,12 @@ class MainWindow(object):
                         int(self.end_minute_adj.get_value()))
                 else:
                     self.backend.sync_always()
-            self.backend.apply(self.UserSettings.config_temp)
+            if wait_for_desktop:
+                # at autostart the desktop is still setting its own colors
+                self.make_first_sleep = False
+                GLib.timeout_add_seconds(5, self.apply_after_autostart)
+            else:
+                self.backend.apply(self.UserSettings.config_temp)
             if not self.UserSettings.config_scrollbar:
                 if self.UserSettings.config_temp == self.temp_color["low"]:
                     self.low_button.get_style_context().add_class("suggested-action")
@@ -612,6 +614,11 @@ class MainWindow(object):
             self.UserSettings.writeConfig(state, self.UserSettings.config_temp, self.UserSettings.config_scrollbar,
                                           self.UserSettings.config_trayicon, self.UserSettings.config_autostart)
             self.user_settings()
+
+    def apply_after_autostart(self):
+        if self.night_switch.get_state():
+            self.backend.apply(self.UserSettings.config_temp)
+        return False
 
     def on_ui_autostart_switch_state_set(self, switch, state):
         self.UserSettings.set_autostart(state)
